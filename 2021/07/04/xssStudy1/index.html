@@ -193,7 +193,7 @@
     <div class="head-info">
       <span class="post-info-item"><i class="iconfont iconcalendar"></i>July 04, 2021</span>
       
-      <span class="post-info-item"><i class="iconfont iconfont-size"></i>649</span>
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>603</span>
     </div>
   </div>
 </section>
@@ -205,8 +205,8 @@
 <h2 id="N1BOOK-XSS闯关-level1"><a href="#N1BOOK-XSS闯关-level1" class="headerlink" title="[N1BOOK]XSS闯关(level1)"></a>[N1BOOK]XSS闯关(level1)</h2><p>这个题有多个level，每个level的目标都是利用xss在当前页面弹窗</p>
 <p><img   class="lazyload" data-original="/images/xssStudy1/image-20210704224633129.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
 <p>level1的页面打开后有一个welcome xss，welcome后面的内容是可以通过url传参控制的</p>
-<p><img    class="lazyload" data-original="/images/xssStudy1/image-20210705122543138.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">image-20210705122543138</span></p>
-<p><img    class="lazyload" data-original="/images/xssStudy1/image-20210705122816235.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">image-20210705122816235</span></p>
+<p><img   class="lazyload" data-original="/images/xssStudy1/image-20210705122543138.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p><img   class="lazyload" data-original="/images/xssStudy1/image-20210705122816235.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
 <p>那我们构造username=&lt;script&gt;alert(1)&lt;/script&gt;的话，代码就会变成</p>
 <p><code>Welcome &lt;script&gt;alert(1)&lt;/script&gt;</code></p>
 <p>结果就是会在当前页面进行一次弹窗</p>
