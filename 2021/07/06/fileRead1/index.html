@@ -6,12 +6,12 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Archive - Welcome to fallingblog</title>
+  <title>文件读取漏洞专题（一） - Welcome to fallingblog</title>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="google" content="notranslate" />
   
-  
+  <meta name="description" content="任意文件读取漏洞非常基础而又常见，攻击者可以由此收集到...">
   <meta name="author" content="Ibukifalling">
   <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
   <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
@@ -145,7 +145,7 @@
       
       
     </div>
-    <div class="center">归档</div>
+    <div class="center">文件读取漏洞专题（一）</div>
     <div class="right">
       <i class="iconfont iconmenu j-navbar-menu"></i>
     </div>
@@ -167,7 +167,7 @@
       </li><li class="menu-item">
         <a href="/galleries/ " class="underline "> 摄影</a>
       </li><li class="menu-item">
-        <a href="/archives/ " class="underline active"> 归档</a>
+        <a href="/archives/ " class="underline "> 归档</a>
       </li><li class="menu-item">
         <a href="/tags/ " class="underline "> 标签</a>
       </li><li class="menu-item">
@@ -181,35 +181,84 @@
   </div>
 </nav>
   <main id="main">
-  <section class="archive">
-    <div class="archive-container">
-      <div class="archive-post">
-        <h3 class="archive-total">归档: 3 篇</h3>
+  <div class="article-wrap">
+    <div class="row container">
+      <div class="col-xl-3"></div>
+      <div class="col-xl-6"><article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="/images/theme/post-image.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">文件读取漏洞专题（一）</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>July 06, 2021</span>
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>855</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        <p>任意文件读取漏洞非常基础而又常见，攻击者可以由此收集到大量敏感信息</p>
+<p>该专题将对文件读取漏洞的知识进行一些汇总，偶尔会有相关例题解析</p>
+<h1 id="任意文件读取简介"><a href="#任意文件读取简介" class="headerlink" title="任意文件读取简介"></a>任意文件读取简介</h1><p>攻击者通过一些手段读取到服务器上开发者不允许读到的文件。</p>
+<p>web中存读取文件的操作十分常见，若是没有做好安全措施，就容易被攻击者所利用。</p>
+<p>不过严格来说，如果服务器被部署得十分“安全”，即使可以读取任意文件，攻击者也得不到太多有价值的信息。</p>
+<h1 id="文件读取-php"><a href="#文件读取-php" class="headerlink" title="文件读取-php"></a>文件读取-php</h1><p>关键函数包括但不限于:file_get_content()、file()、fopen()、include()、require()、iclude_once()、require_once()、system()、exec()等</p>
+<p>php中有许多功能不同而形式相似的协议，统称Wrapper</p>
+<p>同时，php的特色机制Filter允许我们对文件流作一定处理，接下来通过一个简单的题目说明一下</p>
+<h2 id="N1BOOK-afr-1"><a href="#N1BOOK-afr-1" class="headerlink" title="[N1BOOK]afr_1"></a>[N1BOOK]afr_1</h2><p>直接访问题目，页面上只有一句hello world。</p>
+<p>查看地址栏<img   class="lazyload" data-original="../images/fileRead1/image-20210707001924134.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>发现进行了传参p=hello，接着我们发现直接访问/hello.php也能得到同样内容</p>
+<p>访问flag.php时，页面显示<img   class="lazyload" data-original="../images/fileRead1/image-20210707002112275.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >，显然不能直接得到flag</p>
+<p>这里利用<code>php://filter/convert.base64-encode/resource=index</code>来读取到index.php的内容<img   class="lazyload" data-original="../images/fileRead1/image-20210707002429696.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>解释一下php://filter/convert.base64-encode/resource=xxx的作用：如果我们直接读取源代码，代码会被当作php代码来执行，所以我们将源码进行base64编码输出，再进行解码就可以读取到源码</p>
+<p>php://filter在allow_url_fopen 和allow_url_include双off情况下也可用</p>
+<p>那么很显然，看到源码，我们很容易就能构造出payload</p>
+<p><code>php://filter/convert.base64-encode/resource=flag</code></p>
+<p><img   class="lazyload" data-original="../images/fileRead1/image-20210707002906842.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>n1book{afr_1_solved}</p>
+
+      </section>
+      <section class="extra">
         
         
-          
-            <h3 class="archive-year">2021 年</h3>
-          
-          <div class="archive-item">
-            <a class="archive-date" href="/2021/07/06/fileRead1/">July 06</a>
-            <a class="archive-title" href="/2021/07/06/fileRead1/">文件读取漏洞专题（一）</a>
-          </div>
+          <section class="donate">
+  <div id="qrcode-donate">
+    <img   class="lazyload" data-original="https://pic.izhaoo.com/alipay.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >
+  </div>
+  <div class="icon">
+    <a href="javascript:;" id="alipay"><i class="iconfont iconalipay"></i></a>
+    <a href="javascript:;" id="wechat"><i class="iconfont iconwechat-fill"></i></a>
+  </div>
+</section>
+        
+        
+  <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/file-read/" rel="tag">file read</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li></ul> 
+
+        
+  <nav class="nav">
+    <a></a>
+    <a href="/2021/07/04/xssStudy1/">XSS初步认知学习<i class="iconfont iconright"></i></a>
+  </nav>
+
+      </section>
+      
+    </section>
+  </div>
+</article></div>
+      <div class="col-xl-3">
         
           
-          <div class="archive-item">
-            <a class="archive-date" href="/2021/07/04/xssStudy1/">July 04</a>
-            <a class="archive-title" href="/2021/07/04/xssStudy1/">XSS初步认知学习</a>
-          </div>
-        
-          
-          <div class="archive-item">
-            <a class="archive-date" href="/2021/07/03/Myfirstblog/">July 03</a>
-            <a class="archive-title" href="/2021/07/03/Myfirstblog/">小白的第一次博客搭建记录</a>
-          </div>
+  <aside class="toc-wrap">
+    <h3 class="toc-title">文章目录：</h3>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E7%AE%80%E4%BB%8B"><span class="toc-text">任意文件读取简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96-php"><span class="toc-text">文件读取-php</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#N1BOOK-afr-1"><span class="toc-text">[N1BOOK]afr_1</span></a></li></ol></li></ol>
+  </aside>
+
         
       </div>
     </div>
-  </section>
+  </div>
 </main>
   
 
