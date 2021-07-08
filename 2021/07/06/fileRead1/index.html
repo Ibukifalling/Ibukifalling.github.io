@@ -208,15 +208,15 @@
 <p>php中有许多功能不同而形式相似的协议，统称Wrapper</p>
 <p>同时，php的特色机制Filter允许我们对文件流作一定处理，接下来通过一个简单的题目说明一下</p>
 <h2 id="N1BOOK-afr-1"><a href="#N1BOOK-afr-1" class="headerlink" title="[N1BOOK]afr_1"></a>[N1BOOK]afr_1</h2><p>直接访问题目，页面上只有一句hello world。</p>
-<p>查看地址栏<img   class="lazyload" data-original="../images/fileRead1/image-20210707001924134.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>查看地址栏<img   class="lazyload" data-original="/images/fileRead1/image-20210707001924134.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
 <p>发现进行了传参p=hello，接着我们发现直接访问/hello.php也能得到同样内容</p>
-<p>访问flag.php时，页面显示<img   class="lazyload" data-original="../images/fileRead1/image-20210707002112275.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >，显然不能直接得到flag</p>
-<p>这里利用<code>php://filter/convert.base64-encode/resource=index</code>来读取到index.php的内容<img   class="lazyload" data-original="../images/fileRead1/image-20210707002429696.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>访问flag.php时，页面显示<img   class="lazyload" data-original="/images/fileRead1/image-20210707002112275.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >，显然不能直接得到flag</p>
+<p>这里利用<code>php://filter/convert.base64-encode/resource=index</code>来读取到index.php的内容<img   class="lazyload" data-original="/images/fileRead1/image-20210707002429696.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
 <p>解释一下php://filter/convert.base64-encode/resource=xxx的作用：如果我们直接读取源代码，代码会被当作php代码来执行，所以我们将源码进行base64编码输出，再进行解码就可以读取到源码</p>
 <p>php://filter在allow_url_fopen 和allow_url_include双off情况下也可用</p>
 <p>那么很显然，看到源码，我们很容易就能构造出payload</p>
 <p><code>php://filter/convert.base64-encode/resource=flag</code></p>
-<p><img   class="lazyload" data-original="../images/fileRead1/image-20210707002906842.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p><img   class="lazyload" data-original="/images/fileRead1/image-20210707002906842.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
 <p>n1book{afr_1_solved}</p>
 
       </section>
