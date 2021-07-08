@@ -6,12 +6,12 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>file read - Welcome to fallingblog</title>
+  <title>fileRead2 - Welcome to fallingblog</title>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="google" content="notranslate" />
   
-  
+  <meta name="description" content="任意文件读取漏洞非常基础而又常见，攻击者可以由此收集到...">
   <meta name="author" content="Ibukifalling">
   <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
   <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
@@ -145,7 +145,7 @@
       
       
     </div>
-    <div class="center">标签</div>
+    <div class="center">fileRead2</div>
     <div class="right">
       <i class="iconfont iconmenu j-navbar-menu"></i>
     </div>
@@ -181,29 +181,79 @@
   </div>
 </nav>
   <main id="main">
-  <section class="archive">
-    <div class="archive-container">
-      <div class="archive-post">
-        <h2 class="archive-total"># file read</h2>
+  <div class="article-wrap">
+    <div class="row container">
+      <div class="col-xl-3"></div>
+      <div class="col-xl-6"><article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="/images/theme/post-image.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">fileRead2</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>July 08, 2021</span>
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>625</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        <p>任意文件读取漏洞非常基础而又常见，攻击者可以由此收集到大量敏感信息</p>
+<p>该专题将对文件读取漏洞的知识进行一些汇总，偶尔会有相关例题解析</p>
+<h1 id="文件读取-php（续）"><a href="#文件读取-php（续）" class="headerlink" title="文件读取-php（续）"></a>文件读取-php（续）</h1><p>上一篇文章提到了利用php的wrapper读取文件，接下来介绍一下关于php文件读取的技巧</p>
+<h2 id="00截断和目录穿越"><a href="#00截断和目录穿越" class="headerlink" title="00截断和目录穿越"></a>00截断和目录穿越</h2><p>以下面一道题为例</p>
+<h3 id="WeChall-Training-PHP-LFI"><a href="#WeChall-Training-PHP-LFI" class="headerlink" title="[WeChall]Training: PHP LFI*"></a>[WeChall]Training: PHP LFI*</h3><p><img    class="lazyload" data-original="../images/fileRead2/image-20210709001939597.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">image-20210709001939597</span></p>
+<p>题目简单明了，要求include到solution.php，但是这里出现了问题：filename的前后都是不可控的，路径前面加上了page/，后面又以.html结尾。</p>
+<p>page/我们可以简单地用../来返回上一级目录，那又怎么解决后缀的问题呢？</p>
+<p><strong>而ascii中0作为特殊字符保留，表示字符串结束</strong>，所以我们在文件名后加%00即可造成截断</p>
+<p>payload:  <code>?file=../../solution.php%00</code></p>
+<p><img    class="lazyload" data-original="../images/fileRead2/image-20210709002600235.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">image-20210709002600235</span></p>
+<h3 id="一些其他协议"><a href="#一些其他协议" class="headerlink" title="一些其他协议"></a>一些其他协议</h3><p>zip和phar协议有时可以用于在遇到文件上传功能时进行文件包含来执行php代码</p>
+<h2 id="文件读取-Java"><a href="#文件读取-Java" class="headerlink" title="文件读取-Java"></a>文件读取-Java</h2><p>java的一些模块有时未对传入路径作安全限制或限制不严，导致可以读取到一些敏感文件</p>
+<p>同时也可能有XXE导致的文件读取</p>
+<h2 id="文件读取-Python"><a href="#文件读取-Python" class="headerlink" title="文件读取-Python"></a>文件读取-Python</h2><p>作为面向对象的语言，python搭建web应用时的“风格”和php不同，用户和web应用交换往往包含对服务器资源文件的请求，容易出现非预期的读取文件情况</p>
+
+      </section>
+      <section class="extra">
         
         
-          
-            <h3 class="archive-year">2021 年</h3>
-          
-          <div class="archive-item">
-            <a class="archive-date" href="/2021/07/08/fileRead2/">07/08</a>
-            <a class="archive-title" href="/2021/07/08/fileRead2/">fileRead2</a>
-          </div>
+          <section class="donate">
+  <div id="qrcode-donate">
+    <img   class="lazyload" data-original="https://pic.izhaoo.com/alipay.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >
+  </div>
+  <div class="icon">
+    <a href="javascript:;" id="alipay"><i class="iconfont iconalipay"></i></a>
+    <a href="javascript:;" id="wechat"><i class="iconfont iconwechat-fill"></i></a>
+  </div>
+</section>
+        
+        
+  <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/file-read/" rel="tag">file read</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li></ul> 
+
+        
+  <nav class="nav">
+    <a></a>
+    <a href="/2021/07/06/fileRead1/">文件读取漏洞专题（一）<i class="iconfont iconright"></i></a>
+  </nav>
+
+      </section>
+      
+    </section>
+  </div>
+</article></div>
+      <div class="col-xl-3">
         
           
-          <div class="archive-item">
-            <a class="archive-date" href="/2021/07/06/fileRead1/">07/06</a>
-            <a class="archive-title" href="/2021/07/06/fileRead1/">文件读取漏洞专题（一）</a>
-          </div>
+  <aside class="toc-wrap">
+    <h3 class="toc-title">文章目录：</h3>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96-php%EF%BC%88%E7%BB%AD%EF%BC%89"><span class="toc-text">文件读取-php（续）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#00%E6%88%AA%E6%96%AD%E5%92%8C%E7%9B%AE%E5%BD%95%E7%A9%BF%E8%B6%8A"><span class="toc-text">00截断和目录穿越</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#WeChall-Training-PHP-LFI"><span class="toc-text">[WeChall]Training: PHP LFI*</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E5%85%B6%E4%BB%96%E5%8D%8F%E8%AE%AE"><span class="toc-text">一些其他协议</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96-Java"><span class="toc-text">文件读取-Java</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96-Python"><span class="toc-text">文件读取-Python</span></a></li></ol></li></ol>
+  </aside>
+
         
       </div>
     </div>
-  </section>
+  </div>
 </main>
   
 
