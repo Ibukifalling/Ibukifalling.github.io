@@ -193,7 +193,7 @@
     <div class="head-info">
       <span class="post-info-item"><i class="iconfont iconcalendar"></i>July 08, 2021</span>
       
-      <span class="post-info-item"><i class="iconfont iconfont-size"></i>625</span>
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>579</span>
     </div>
   </div>
 </section>
@@ -203,12 +203,12 @@
 <p>该专题将对文件读取漏洞的知识进行一些汇总，偶尔会有相关例题解析</p>
 <h1 id="文件读取-php（续）"><a href="#文件读取-php（续）" class="headerlink" title="文件读取-php（续）"></a>文件读取-php（续）</h1><p>上一篇文章提到了利用php的wrapper读取文件，接下来介绍一下关于php文件读取的技巧</p>
 <h2 id="00截断和目录穿越"><a href="#00截断和目录穿越" class="headerlink" title="00截断和目录穿越"></a>00截断和目录穿越</h2><p>以下面一道题为例</p>
-<h3 id="WeChall-Training-PHP-LFI"><a href="#WeChall-Training-PHP-LFI" class="headerlink" title="[WeChall]Training: PHP LFI*"></a>[WeChall]Training: PHP LFI*</h3><p><img    class="lazyload" data-original="../images/fileRead2/image-20210709001939597.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">image-20210709001939597</span></p>
+<h3 id="WeChall-Training-PHP-LFI"><a href="#WeChall-Training-PHP-LFI" class="headerlink" title="[WeChall]Training: PHP LFI*"></a>[WeChall]Training: PHP LFI*</h3><p><img   class="lazyload" data-original="../images/fileRead2/image-20210709001939597.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
 <p>题目简单明了，要求include到solution.php，但是这里出现了问题：filename的前后都是不可控的，路径前面加上了page/，后面又以.html结尾。</p>
 <p>page/我们可以简单地用../来返回上一级目录，那又怎么解决后缀的问题呢？</p>
 <p><strong>而ascii中0作为特殊字符保留，表示字符串结束</strong>，所以我们在文件名后加%00即可造成截断</p>
 <p>payload:  <code>?file=../../solution.php%00</code></p>
-<p><img    class="lazyload" data-original="../images/fileRead2/image-20210709002600235.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">image-20210709002600235</span></p>
+<p><img   class="lazyload" data-original="../images/fileRead2/image-20210709002600235.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
 <h3 id="一些其他协议"><a href="#一些其他协议" class="headerlink" title="一些其他协议"></a>一些其他协议</h3><p>zip和phar协议有时可以用于在遇到文件上传功能时进行文件包含来执行php代码</p>
 <h2 id="文件读取-Java"><a href="#文件读取-Java" class="headerlink" title="文件读取-Java"></a>文件读取-Java</h2><p>java的一些模块有时未对传入路径作安全限制或限制不严，导致可以读取到一些敏感文件</p>
 <p>同时也可能有XXE导致的文件读取</p>
