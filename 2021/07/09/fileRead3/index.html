@@ -6,12 +6,12 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Archive - Welcome to fallingblog: 2021/7</title>
+  <title>文件读取漏洞专题（三） - Welcome to fallingblog</title>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="google" content="notranslate" />
   
-  
+  <meta name="description" content="任意文件读取漏洞非常基础而又常见，攻击者可以由此收集到...">
   <meta name="author" content="Ibukifalling">
   <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
   <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
@@ -145,7 +145,7 @@
       
       
     </div>
-    <div class="center">归档</div>
+    <div class="center">文件读取漏洞专题（三）</div>
     <div class="right">
       <i class="iconfont iconmenu j-navbar-menu"></i>
     </div>
@@ -181,47 +181,80 @@
   </div>
 </nav>
   <main id="main">
-  <section class="archive">
-    <div class="archive-container">
-      <div class="archive-post">
-        <h3 class="archive-total">归档: 5 篇</h3>
+  <div class="article-wrap">
+    <div class="row container">
+      <div class="col-xl-3"></div>
+      <div class="col-xl-6"><article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="/images/theme/post-image.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">文件读取漏洞专题（三）</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>July 09, 2021</span>
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>778</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        <p>任意文件读取漏洞非常基础而又常见，攻击者可以由此收集到大量敏感信息</p>
+<p>该专题将对文件读取漏洞的知识进行一些汇总，偶尔会有相关例题解析</p>
+<h1 id="中间件-服务器的文件读取漏洞"><a href="#中间件-服务器的文件读取漏洞" class="headerlink" title="中间件/服务器的文件读取漏洞"></a>中间件/服务器的文件读取漏洞</h1><h2 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h2><p>Nginx配置中的alias可以用来指定请求资源的真实路径，但是当配置错误时，比如</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">location</span> /static &#123;<br>	<span class="hljs-attribute">alias</span> /home/myapp/static/;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>location后没有加“/”，此时可以通过在路径后拼接../来造成目录穿越</p>
+<h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><p>MySQL的load_file()函数在有权限以及相关配置合适的情况下可以读取文件</p>
+<p>如果能执行非基本SQL语句，也可以通过load data infile来读取文件</p>
+<h2 id="软链接"><a href="#软链接" class="headerlink" title="软链接"></a>软链接</h2><p>ln命令可以为某一个文件在另外一个位置建立一个同不的链接，常用ln -s命令来创建软链接</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs ada">　　-f : 链结时先将与 <span class="hljs-type">dist</span> 同档名的档案删除<br>　　-d : 允许系统管理者硬链结自己的目录<br>　　-i : 在删除与 <span class="hljs-type">dist</span> 同档名的档案时先进行询问<br>　　-n : 在进行软连结时，将 <span class="hljs-type">dist</span> 视为一般的档案<br>　　-s : 进行软链结(<span class="hljs-type">symbolic</span> link)<br>　　-v : 在连结之前显示其档名<br>　　-b : 将在链结时会被覆写或删除的档案进行备份<br>　　-S SUFFIX : 将备份的档案都加上 <span class="hljs-type">SUFFIX</span> 的字尾<br>　　-V METHOD : 指定备份的方式<br>　　<span class="hljs-comment">--help : 显示辅助说明</span><br>　　<span class="hljs-comment">--version : 显示版本</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="Docker-API"><a href="#Docker-API" class="headerlink" title="Docker-API"></a>Docker-API</h2><p>Docker-API可通过UNIX Socket或http通信，当SSRF可以进行UNIX Socket通信时，可以通过操控Docker-API把本地文件载入Docker新容器来读取</p>
+<h1 id="客户端的文件读取漏洞"><a href="#客户端的文件读取漏洞" class="headerlink" title="客户端的文件读取漏洞"></a>客户端的文件读取漏洞</h1><p>大多是基于XSS来读取本地文件，不再赘述</p>
+
+      </section>
+      <section class="extra">
         
         
-          
-            <h3 class="archive-year">2021 年</h3>
-          
-          <div class="archive-item">
-            <a class="archive-date" href="/2021/07/09/fileRead3/">July 09</a>
-            <a class="archive-title" href="/2021/07/09/fileRead3/">文件读取漏洞专题（三）</a>
-          </div>
+          <section class="donate">
+  <div id="qrcode-donate">
+    <img   class="lazyload" data-original="https://pic.izhaoo.com/alipay.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >
+  </div>
+  <div class="icon">
+    <a href="javascript:;" id="alipay"><i class="iconfont iconalipay"></i></a>
+    <a href="javascript:;" id="wechat"><i class="iconfont iconwechat-fill"></i></a>
+  </div>
+</section>
+        
+        
+  <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/file-read/" rel="tag">file read</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li></ul> 
+
+        
+  <nav class="nav">
+    <a></a>
+    <a href="/2021/07/08/fileRead2/">文件读取漏洞专题（二）<i class="iconfont iconright"></i></a>
+  </nav>
+
+      </section>
+      
+    </section>
+  </div>
+</article></div>
+      <div class="col-xl-3">
         
           
-          <div class="archive-item">
-            <a class="archive-date" href="/2021/07/08/fileRead2/">July 08</a>
-            <a class="archive-title" href="/2021/07/08/fileRead2/">文件读取漏洞专题（二）</a>
-          </div>
-        
-          
-          <div class="archive-item">
-            <a class="archive-date" href="/2021/07/06/fileRead1/">July 06</a>
-            <a class="archive-title" href="/2021/07/06/fileRead1/">文件读取漏洞专题（一）</a>
-          </div>
-        
-          
-          <div class="archive-item">
-            <a class="archive-date" href="/2021/07/04/xssStudy1/">July 04</a>
-            <a class="archive-title" href="/2021/07/04/xssStudy1/">XSS初步认知学习</a>
-          </div>
-        
-          
-          <div class="archive-item">
-            <a class="archive-date" href="/2021/07/03/Myfirstblog/">July 03</a>
-            <a class="archive-title" href="/2021/07/03/Myfirstblog/">小白的第一次博客搭建记录</a>
-          </div>
+  <aside class="toc-wrap">
+    <h3 class="toc-title">文章目录：</h3>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%AD%E9%97%B4%E4%BB%B6-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E"><span class="toc-text">中间件&#x2F;服务器的文件读取漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Nginx"><span class="toc-text">Nginx</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">数据库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E9%93%BE%E6%8E%A5"><span class="toc-text">软链接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-API"><span class="toc-text">Docker-API</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E"><span class="toc-text">客户端的文件读取漏洞</span></a></li></ol>
+  </aside>
+
         
       </div>
     </div>
-  </section>
+  </div>
 </main>
   
 
