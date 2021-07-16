@@ -1,0 +1,394 @@
+
+
+<!DOCTYPE html>
+<html lang="en" color-mode=light>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Web基础-文件上传（一） - Welcome to fallingblog</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="google" content="notranslate" />
+  
+  <meta name="description" content="文件上传在Web业务中很常见。如果没有对用户上传的文件...">
+  <meta name="author" content="Ibukifalling">
+  <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" sizes="180x180">
+  <meta rel="mask-icon" href="/images/icons/stun-logo.svg" color="#333333">
+  
+    <meta rel="msapplication-TileImage" content="/images/icons/favicon-144x144.png">
+    <meta rel="msapplication-TileColor" content="#000000">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1445822_r673sha78lq.css">
+
+  
+
+  
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  
+
+  
+    
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/xcode.min.css" name="highlight-style" mode="light">
+
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/solarized-dark.min.css" name="highlight-style" mode="dark">
+
+      
+  
+
+  <script>
+    var CONFIG = window.CONFIG || {};
+    var ZHAOO = window.ZHAOO || {};
+    CONFIG = {
+      isHome: false,
+      fancybox: true,
+      pjax: false,
+      lazyload: {
+        enable: true,
+        only_post: 'false',
+        loading: '[object Object]'
+      },
+      donate: {
+        enable: true,
+        alipay: 'https://pic.izhaoo.com/alipay.jpg',
+        wechat: 'https://pic.izhaoo.com/wechat.jpg'
+      },
+      galleries: {
+        enable: true
+      },
+      fab: {
+        enable: true,
+        always_show: false
+      },
+      carrier: {
+        enable: true
+      },
+      daovoice: {
+        enable: false
+      },
+      preview: {
+        background: {
+          default: '',
+          api: ''
+        },
+        motto: {
+          default: '我在开了灯的床头下，想问问自己的心啊。',
+          typing: true,
+          api: 'https://v2.jinrishici.com/one.json',
+          data_contents: '["data","content"]'
+        },
+      },
+      qrcode: {
+        enable: true,
+        type: 'url',
+        image: 'https://pic.izhaoo.com/weapp-code.jpg',
+      },
+      toc: {
+        enable: true
+      },
+      scrollbar: {
+        type: 'default'
+      },
+      notification: {
+        enable: false,
+        delay: 4500,
+        list: '',
+        page_white_list: '',
+        page_black_list: ''
+      },
+      search: {
+        enable: false,
+        path: ''
+      }
+    }
+  </script>
+
+  
+
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="lock-screen">
+  <div class="loading"></div>
+  
+    
+
+
+  <nav class="navbar">
+    <div class="left">
+      
+        <i class="iconfont iconhome j-navbar-back-home"></i>
+      
+      
+        <i class="iconfont iconqrcode j-navbar-qrcode"></i>
+      
+      
+        <i class="iconfont iconmoono" id="color-toggle" color-toggle="light"></i>
+      
+      
+    </div>
+    <div class="center">Web基础-文件上传（一）</div>
+    <div class="right">
+      <i class="iconfont iconmenu j-navbar-menu"></i>
+    </div>
+    
+      <div id="qrcode-navbar"></div>
+    
+  </nav>
+
+  
+  
+
+<nav class="menu">
+  <div class="menu-container">
+    <div class="menu-close">
+      <i class="iconfont iconbaseline-close-px"></i>
+    </div>
+    <ul class="menu-content"><li class="menu-item">
+        <a href="/ " class="underline "> 首页</a>
+      </li><li class="menu-item">
+        <a href="/galleries/ " class="underline "> 摄影</a>
+      </li><li class="menu-item">
+        <a href="/archives/ " class="underline "> 归档</a>
+      </li><li class="menu-item">
+        <a href="/tags/ " class="underline "> 标签</a>
+      </li><li class="menu-item">
+        <a href="/categories/ " class="underline "> 分类</a>
+      </li><li class="menu-item">
+        <a href="/about/ " class="underline "> 关于</a>
+      </li></ul>
+    
+      <div class="menu-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+    
+  </div>
+</nav>
+  <main id="main">
+  <div class="article-wrap">
+    <div class="row container">
+      <div class="col-xl-3"></div>
+      <div class="col-xl-6"><article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="/images/theme/post-image.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">Web基础-文件上传（一）</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>July 15, 2021</span>
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>1167</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        <p>文件上传在Web业务中很常见。如果没有对用户上传的文件做好处理，会导致非常严重的安全问题。</p>
+<p>本专题是对文件上传一些知识点的摘要总结</p>
+<h1 id="截断"><a href="#截断" class="headerlink" title="截断"></a>截断</h1><h3 id="00截断"><a href="#00截断" class="headerlink" title="00截断"></a>00截断</h3><p><strong>php代码的底层是c语言</strong>，故字符串的结束符’\0’常用来作截断</p>
+<p>常用于通过白名单校验，如1.php\00.jpg可以通过对jpg后缀的白名单检测，但是实际保存文件时将保存为1.php</p>
+<h3 id="转换字符集截断"><a href="#转换字符集截断" class="headerlink" title="转换字符集截断"></a>转换字符集截断</h3><p>低版本的php在实现字符集转换时常用iconv()函数，超出UTF-8单字节允许的字符范围（0x00~0x7F）时将不再处理之后的字符，从而造成截断</p>
+<p>例如1.php\x99.jpg，最终保存为1.php</p>
+<h1 id="黑名单校验"><a href="#黑名单校验" class="headerlink" title="黑名单校验"></a>黑名单校验</h1><h3 id="常用文件后缀"><a href="#常用文件后缀" class="headerlink" title="常用文件后缀"></a>常用文件后缀</h3><p>php: php3,php5,phtml,pht</p>
+<p>asp: cdx,der,asa</p>
+<p>jsp: jspx</p>
+<p>windows系统下也可以尝试”php”,”php::$DATA”,”php.”,”a.php:.jpg”</p>
+<p>另，windows环境下文件名不区分大小写，可以绕过in_array</p>
+<h3 id="htaccess文件"><a href="#htaccess文件" class="headerlink" title=".htaccess文件"></a>.htaccess文件</h3><p>.htaccess可以修改配置，使服务器以PHP解析指定文件</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php">SetHandler application/x-httpd-php<span class="hljs-comment">//所有的文件当做php文件来解析</span><br>AddType application/x-httpd-php .jpg<span class="hljs-comment">//.jpg文件当作php文件解析</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="user-ini文件"><a href="#user-ini文件" class="headerlink" title=".user.ini文件"></a>.user.ini文件</h3><p>.user.ini与.htaccess有相似的效果，在过滤了.htaccess时可以尝试</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php">GIF89a                  <span class="hljs-comment">//绕过exif_imagetype()</span><br>auto_prepend_file=a.jpg <span class="hljs-comment">//指定在主文件之前自动解析的文件的名称，并包含该文件</span><br>auto_append_file=a.jpg  <span class="hljs-comment">//解析后进行包含</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="白名单校验"><a href="#白名单校验" class="headerlink" title="白名单校验"></a>白名单校验</h1><h3 id="ISS解析漏洞"><a href="#ISS解析漏洞" class="headerlink" title="ISS解析漏洞"></a>ISS解析漏洞</h3><p>*.asp文件夹下所有文件都会被当作脚本文件解析</p>
+<p>1.asp;a.jpg会被解析为asp</p>
+<h3 id="Nginx解析漏洞"><a href="#Nginx解析漏洞" class="headerlink" title="Nginx解析漏洞"></a>Nginx解析漏洞</h3><p>Nginx未配置try_files且FPM未设置security.limit_extension时可能出现解析漏洞</p>
+<p>上传x.jpg文件后，访问x.jpg/x.php会以php解析文件</p>
+<h3 id="Apache多后缀解析漏洞"><a href="#Apache多后缀解析漏洞" class="headerlink" title="Apache多后缀解析漏洞"></a>Apache多后缀解析漏洞</h3><p>AddHandler application/x-httpd-php .php配置下，x.php.xxx会被application/x-httpd-php处理</p>
+<p>若使用AddType，多后缀文件将从最右边的后缀开始识别直到存在对应MIME type或Handler</p>
+<p>白名单中有偏门后缀时可尝试</p>
+<h3 id="CVE-2017-15715"><a href="#CVE-2017-15715" class="headerlink" title="CVE-2017-15715"></a>CVE-2017-15715</h3><p>HTTPD2.4.0到2.4.29版本中，FileMatch指令中的”$”会匹配到换行符，可使用x.php\n（x.php%0A）绕过</p>
+
+      </section>
+      <section class="extra">
+        
+        
+          <section class="donate">
+  <div id="qrcode-donate">
+    <img   class="lazyload" data-original="https://pic.izhaoo.com/alipay.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >
+  </div>
+  <div class="icon">
+    <a href="javascript:;" id="alipay"><i class="iconfont iconalipay"></i></a>
+    <a href="javascript:;" id="wechat"><i class="iconfont iconwechat-fill"></i></a>
+  </div>
+</section>
+        
+        
+  <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/upload/" rel="tag">upload</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li></ul> 
+
+        
+  <nav class="nav">
+    <a></a>
+    <a href="/2021/07/13/SSTIstudy/">flask模板注入<i class="iconfont iconright"></i></a>
+  </nav>
+
+      </section>
+      
+    </section>
+  </div>
+</article></div>
+      <div class="col-xl-3">
+        
+          
+  <aside class="toc-wrap">
+    <h3 class="toc-title">文章目录：</h3>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%88%AA%E6%96%AD"><span class="toc-text">截断</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#00%E6%88%AA%E6%96%AD"><span class="toc-text">00截断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BD%AC%E6%8D%A2%E5%AD%97%E7%AC%A6%E9%9B%86%E6%88%AA%E6%96%AD"><span class="toc-text">转换字符集截断</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%BB%91%E5%90%8D%E5%8D%95%E6%A0%A1%E9%AA%8C"><span class="toc-text">黑名单校验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E6%96%87%E4%BB%B6%E5%90%8E%E7%BC%80"><span class="toc-text">常用文件后缀</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#htaccess%E6%96%87%E4%BB%B6"><span class="toc-text">.htaccess文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#user-ini%E6%96%87%E4%BB%B6"><span class="toc-text">.user.ini文件</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%99%BD%E5%90%8D%E5%8D%95%E6%A0%A1%E9%AA%8C"><span class="toc-text">白名单校验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ISS%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-text">ISS解析漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Nginx%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-text">Nginx解析漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Apache%E5%A4%9A%E5%90%8E%E7%BC%80%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-text">Apache多后缀解析漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2017-15715"><span class="toc-text">CVE-2017-15715</span></a></li></ol></li></ol></li></ol>
+  </aside>
+
+        
+      </div>
+    </div>
+  </div>
+</main>
+  
+
+<footer class="footer">
+  <div class="footer-social"><a 
+        href="tencent://message/?Menu=yes&uin=894519210 "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#12B7F5'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconQQ "></i>
+      </a><a 
+        href="javascript:; "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#09BB07'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconwechat-fill "></i>
+      </a><a 
+        href="https://www.instagram.com/izhaoo/ "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#DA2E76'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconinstagram "></i>
+      </a><a 
+        href="https://github.com/zhaoo "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#9f7be1'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  icongithub-fill "></i>
+      </a><a 
+        href="mailto:izhaoo@163.com "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color=#FF3B00" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconmail"></i>
+      </a></div>
+  
+    <div class="footer-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+  
+</footer>
+  
+      <div class="fab fab-plus">
+    <i class="iconfont iconplus"></i>
+  </div>
+  
+  
+  <div class="fab fab-up">
+    <i class="iconfont iconcaret-up"></i>
+  </div>
+  
+  
+  
+    
+<script src="/js/color-mode.js"></script>
+
+  
+  
+</body>
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+
+
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+
+
+
+
+<script src="/js/utils.js"></script>
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
