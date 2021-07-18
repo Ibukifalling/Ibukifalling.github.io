@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Web基础-文件上传（一） - Welcome to fallingblog</title>
+  <title>Web基础-文件上传合集 - Welcome to fallingblog</title>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="google" content="notranslate" />
@@ -145,7 +145,7 @@
       
       
     </div>
-    <div class="center">Web基础-文件上传（一）</div>
+    <div class="center">Web基础-文件上传合集</div>
     <div class="right">
       <i class="iconfont iconmenu j-navbar-menu"></i>
     </div>
@@ -189,11 +189,11 @@
     <section class="head">
   <img   class="lazyload" data-original="/images/theme/post-image.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
   <div class="head-mask">
-    <h1 class="head-title">Web基础-文件上传（一）</h1>
+    <h1 class="head-title">Web基础-文件上传合集</h1>
     <div class="head-info">
       <span class="post-info-item"><i class="iconfont iconcalendar"></i>July 15, 2021</span>
       
-      <span class="post-info-item"><i class="iconfont iconfont-size"></i>1167</span>
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>2464</span>
     </div>
   </div>
 </section>
@@ -228,6 +228,25 @@
 <p>若使用AddType，多后缀文件将从最右边的后缀开始识别直到存在对应MIME type或Handler</p>
 <p>白名单中有偏门后缀时可尝试</p>
 <h3 id="CVE-2017-15715"><a href="#CVE-2017-15715" class="headerlink" title="CVE-2017-15715"></a>CVE-2017-15715</h3><p>HTTPD2.4.0到2.4.29版本中，FileMatch指令中的”$”会匹配到换行符，可使用x.php\n（x.php%0A）绕过</p>
+<h1 id="文件禁止访问"><a href="#文件禁止访问" class="headerlink" title="文件禁止访问"></a>文件禁止访问</h1><p><strong>最好的文件无法访问的绕过方法是上传到根目录</strong></p>
+<h3 id="htaccess禁止脚本文件执行"><a href="#htaccess禁止脚本文件执行" class="headerlink" title=".htaccess禁止脚本文件执行"></a>.htaccess禁止脚本文件执行</h3><p>.htaccess可以配置上传的脚本文件无法执行，不过在AllowOverride为none时，.htaccess下的指令无法使用</p>
+<h3 id="文件上传到OSS"><a href="#文件上传到OSS" class="headerlink" title="文件上传到OSS"></a>文件上传到OSS</h3><p>可以通过上传HTML,SVG等文件让浏览器解析实现XSS。</p>
+<p>虽然XSS在aliyuncs.com域下没什么用，但是很多网站会把OSS绑定在自己的二级域名下，这时XSS就可以利用了</p>
+<h3 id="配合文件包含"><a href="#配合文件包含" class="headerlink" title="配合文件包含"></a>配合文件包含</h3><p>若是上传的脚本文件无法被访问或不被解析，可以考虑配合文件包含实现解析</p>
+<p>SSTI中也可能出现类似的情况</p>
+<h3 id="一些不当配置导致绕过"><a href="#一些不当配置导致绕过" class="headerlink" title="一些不当配置导致绕过"></a>一些不当配置导致绕过</h3><p>Nginx配置不正确时，x.php/xxx格式可能导致绕过</p>
+<p>Nginx的location块先匹配普通location再匹配正则location。如果多个普通location都匹配url，则按最长前缀原则选择，且在非完全匹配情况下还会继续交给正则location检测，并在匹配成功时覆盖匹配结果。</p>
+<p><strong>正则location匹配成功后不再继续匹配，正则location匹配顺序与在配置文件中的物理顺序有关</strong></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-section">&lt;Directory <span class="hljs-string">&quot;/var/www/html/upload/&quot;</span>&gt;</span><br> <span class="hljs-section">&lt;FilesMatch <span class="hljs-string">&quot;.(php|php5|html)$&quot;</span>&gt;</span><br>  <span class="hljs-attribute"><span class="hljs-nomarkup">Deny</span></span> from <span class="hljs-literal">all</span><br> <span class="hljs-section">&lt;/FilesMatch&gt;</span><br><span class="hljs-section">&lt;/Directory&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>Apache配置如上时可以通过上传x.php.aaa绕过</p>
+<h1 id="绕过图片验证"><a href="#绕过图片验证" class="headerlink" title="绕过图片验证"></a>绕过图片验证</h1><h3 id="getimagesize"><a href="#getimagesize" class="headerlink" title="getimagesize"></a>getimagesize</h3><p>把php代码添加到图片内容后面就行了，也可以使用XBM通过getimagesize同时利用imagemagick</p>
+<h3 id="imagecreatefromjpeg"><a href="#imagecreatefromjpeg" class="headerlink" title="imagecreatefromjpeg"></a>imagecreatefromjpeg</h3><p>绕过脚本:<a target="_blank" rel="noopener" href="https://github.com/BlackFan/jpg_payload">https://github.com/BlackFan/jpg_payload</a></p>
+<h1 id="临时文件利用"><a href="#临时文件利用" class="headerlink" title="临时文件利用"></a>临时文件利用</h1><p>常配合文件包含</p>
+<h3 id="LFI-via-phpinfo"><a href="#LFI-via-phpinfo" class="headerlink" title="LFI via phpinfo"></a>LFI via phpinfo</h3><p>phpinfo会输出当前环境下所有变量，包括临时文件文件名。如果存在phpinfo文件，往phpinfo上传一个文件可以拿到tmp_name。</p>
+<h3 id="Upload-Progress"><a href="#Upload-Progress" class="headerlink" title="Upload_Progress"></a>Upload_Progress</h3><p>当session.upload_progress.enabled开启时，上传文件时POST与ini中设置的session.upload_progress.name同名变量，PHP会往Session中添加一组包含上传进度等信息的数据。上传时POST php_session_upload_progress，上传文件名会写入SESSION，而PHPSESSION默认以文件保存，进而配合LFI</p>
+<p>如果session.upload_progress.cleanup配置为ON，则需要用到条件竞争，在Session文件被清除前包含到Session，最终实现代码执行。</p>
+<h3 id="Segmentation-fault"><a href="#Segmentation-fault" class="headerlink" title="Segmentation fault"></a>Segmentation fault</h3><p>向Segmentation fault异常的地址上传文件，使其在垃圾回收前异常退出，临时文件就不会被删除，并通过大量上传文件枚举文件名的所有可能，最终实现LFI</p>
 
       </section>
       <section class="extra">
@@ -262,7 +281,7 @@
           
   <aside class="toc-wrap">
     <h3 class="toc-title">文章目录：</h3>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%88%AA%E6%96%AD"><span class="toc-text">截断</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#00%E6%88%AA%E6%96%AD"><span class="toc-text">00截断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BD%AC%E6%8D%A2%E5%AD%97%E7%AC%A6%E9%9B%86%E6%88%AA%E6%96%AD"><span class="toc-text">转换字符集截断</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%BB%91%E5%90%8D%E5%8D%95%E6%A0%A1%E9%AA%8C"><span class="toc-text">黑名单校验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E6%96%87%E4%BB%B6%E5%90%8E%E7%BC%80"><span class="toc-text">常用文件后缀</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#htaccess%E6%96%87%E4%BB%B6"><span class="toc-text">.htaccess文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#user-ini%E6%96%87%E4%BB%B6"><span class="toc-text">.user.ini文件</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%99%BD%E5%90%8D%E5%8D%95%E6%A0%A1%E9%AA%8C"><span class="toc-text">白名单校验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ISS%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-text">ISS解析漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Nginx%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-text">Nginx解析漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Apache%E5%A4%9A%E5%90%8E%E7%BC%80%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-text">Apache多后缀解析漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2017-15715"><span class="toc-text">CVE-2017-15715</span></a></li></ol></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%88%AA%E6%96%AD"><span class="toc-text">截断</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#00%E6%88%AA%E6%96%AD"><span class="toc-text">00截断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BD%AC%E6%8D%A2%E5%AD%97%E7%AC%A6%E9%9B%86%E6%88%AA%E6%96%AD"><span class="toc-text">转换字符集截断</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%BB%91%E5%90%8D%E5%8D%95%E6%A0%A1%E9%AA%8C"><span class="toc-text">黑名单校验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E6%96%87%E4%BB%B6%E5%90%8E%E7%BC%80"><span class="toc-text">常用文件后缀</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#htaccess%E6%96%87%E4%BB%B6"><span class="toc-text">.htaccess文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#user-ini%E6%96%87%E4%BB%B6"><span class="toc-text">.user.ini文件</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%99%BD%E5%90%8D%E5%8D%95%E6%A0%A1%E9%AA%8C"><span class="toc-text">白名单校验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ISS%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-text">ISS解析漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Nginx%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-text">Nginx解析漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Apache%E5%A4%9A%E5%90%8E%E7%BC%80%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-text">Apache多后缀解析漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2017-15715"><span class="toc-text">CVE-2017-15715</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E7%A6%81%E6%AD%A2%E8%AE%BF%E9%97%AE"><span class="toc-text">文件禁止访问</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#htaccess%E7%A6%81%E6%AD%A2%E8%84%9A%E6%9C%AC%E6%96%87%E4%BB%B6%E6%89%A7%E8%A1%8C"><span class="toc-text">.htaccess禁止脚本文件执行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%88%B0OSS"><span class="toc-text">文件上传到OSS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E5%90%88%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-text">配合文件包含</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E4%B8%8D%E5%BD%93%E9%85%8D%E7%BD%AE%E5%AF%BC%E8%87%B4%E7%BB%95%E8%BF%87"><span class="toc-text">一些不当配置导致绕过</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BB%95%E8%BF%87%E5%9B%BE%E7%89%87%E9%AA%8C%E8%AF%81"><span class="toc-text">绕过图片验证</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#getimagesize"><span class="toc-text">getimagesize</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#imagecreatefromjpeg"><span class="toc-text">imagecreatefromjpeg</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6%E5%88%A9%E7%94%A8"><span class="toc-text">临时文件利用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LFI-via-phpinfo"><span class="toc-text">LFI via phpinfo</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Upload-Progress"><span class="toc-text">Upload_Progress</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Segmentation-fault"><span class="toc-text">Segmentation fault</span></a></li></ol></li></ol></li></ol>
   </aside>
 
         
