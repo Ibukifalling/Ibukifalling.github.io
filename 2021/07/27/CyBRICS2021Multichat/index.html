@@ -193,7 +193,7 @@
     <div class="head-info">
       <span class="post-info-item"><i class="iconfont iconcalendar"></i>July 27, 2021</span>
       
-      <span class="post-info-item"><i class="iconfont iconfont-size"></i>6611</span>
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>6615</span>
     </div>
   </div>
 </section>
@@ -227,7 +227,7 @@
 <p>比赛的时候一直显示Invalid captcha验证失败，这题就没继续往下做了</p>
 <p>赛后复现的时候研究了半天，发现需要 挂 代 理，居然是要     挂    代    理！！！</p>
 <p>（我不知道这个验证到底是怎么整的，但是不挂代理就一直过不了，感觉在这种地方被卡住了就挺无语的）</p>
-<h2 id="实施攻击"><a href="#实施攻击" class="headerlink" title="实施攻击"></a>实施攻击</h2><p>解决了令人<img   class="lazyload" data-original="/images/CyBRICS2021Multichat/23C5B6A2.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  style="zoom:50%;" />的验证问题，下面我们来聊一下Cross-site WebSocket hajacking的原理和实施</p>
+<h2 id="实施攻击"><a href="#实施攻击" class="headerlink" title="实施攻击"></a>实施攻击</h2><p>解决了令人😅的验证问题，下面我们来聊一下Cross-site WebSocket hajacking的原理和实施</p>
 <p>先看以下这个WebSocket网页脚本的简单例子</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> ws = <span class="hljs-keyword">new</span> WebSocket(<span class="hljs-string">&quot;wss://xxxxxxxxxxxxxx&quot;</span>);<span class="hljs-comment">//创建一个WebSocket连接</span><br><br>ws.onopen = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">evt</span>) </span>&#123; <span class="hljs-comment">//建立连接成功后的回调函数</span><br>  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Connection open ...&quot;</span>); <br>  ws.send(<span class="hljs-string">&quot;Hello WebSockets!&quot;</span>);<br>&#125;;<br><br>ws.onmessage = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">evt</span>) </span>&#123;<span class="hljs-comment">//收到服务器数据后的回调函数</span><br>  <span class="hljs-built_in">console</span>.log( <span class="hljs-string">&quot;Received Message: &quot;</span> + evt.data);<br>  ws.close();<br>&#125;;<br><br>ws.onclose = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">evt</span>) </span>&#123;<span class="hljs-comment">//连接关闭后的回调函数</span><br>  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Connection closed.&quot;</span>);<br>&#125;;<br></code></pre></td></tr></table></figure>
 
@@ -245,7 +245,7 @@
 <p><img   class="lazyload" data-original="/images/CyBRICS2021Multichat/image-20210727204421875.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
 <p>cybrics{Pwn3d_CR055_51t3_W3850CK3t_h1jACK1n9}</p>
 <h1 id="感想和总结"><a href="#感想和总结" class="headerlink" title="感想和总结"></a>感想和总结</h1><p>参加国际比赛的时候梯子真的真的很重要！(不管是通过google进行信息搜集还是一些因为网络问题导致的搞人心态的问题)</p>
-<p>一开始做这题，naman曾试图爆破，我向他提出这题不太可能是爆破找到秘密房间。后来虽然找到了关于跨站WebSocket劫持的资料，但是由于本人技术水平所限（和令人<img   class="lazyload" data-original="/images/CyBRICS2021Multichat/23C5B6A2.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  style="zoom:50%;" />的验证失败问题）最终没有做出这一题，赛后复现所用的脚本很大程度上参考了Sndav哥哥的exp</p>
+<p>一开始做这题，naman曾试图爆破，我向他提出这题不太可能是爆破找到秘密房间。后来虽然找到了关于跨站WebSocket劫持的资料，但是由于本人技术水平所限（和令人😅的验证失败问题）最终没有做出这一题，赛后复现所用的脚本很大程度上参考了Sndav哥哥的exp</p>
 <p>水平尚待提高，仍需努力</p>
 
       </section>
