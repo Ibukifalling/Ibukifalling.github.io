@@ -1,0 +1,414 @@
+
+
+<!DOCTYPE html>
+<html lang="en" color-mode=light>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>一道有趣的CTF赛题-unicode引发的WebAssembly与js交互问题 - Welcome to fallingblog</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="google" content="notranslate" />
+  
+  <meta name="description" content="
+一万年前投在tttang上的一篇文章，转载到自己博客...">
+  <meta name="author" content="Ibukifalling">
+  <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" sizes="180x180">
+  <meta rel="mask-icon" href="/images/icons/stun-logo.svg" color="#333333">
+  
+    <meta rel="msapplication-TileImage" content="/images/icons/favicon-144x144.png">
+    <meta rel="msapplication-TileColor" content="#000000">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1445822_r673sha78lq.css">
+
+  
+
+  
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  
+
+  
+    
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/xcode.min.css" name="highlight-style" mode="light">
+
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/solarized-dark.min.css" name="highlight-style" mode="dark">
+
+      
+  
+
+  <script>
+    var CONFIG = window.CONFIG || {};
+    var ZHAOO = window.ZHAOO || {};
+    CONFIG = {
+      isHome: false,
+      fancybox: true,
+      pjax: false,
+      lazyload: {
+        enable: true,
+        only_post: 'false',
+        loading: '[object Object]'
+      },
+      donate: {
+        enable: true,
+        alipay: 'https://md.buptmerak.cn/uploads/upload_89b1b34b4475a04c8347112da9bc959f.png',
+        wechat: 'http://qungz.photo.store.qq.com/qun-qungz/V529aeGH0GBCCT3kuwad344GhY0Vrm5T/V5bCgAxMDkwNzMxNjgyk8C6YYUouDg!/800?w5=1066&amp;h5=1021&amp;rf=viewer_421'
+      },
+      galleries: {
+        enable: true
+      },
+      fab: {
+        enable: true,
+        always_show: false
+      },
+      carrier: {
+        enable: true
+      },
+      daovoice: {
+        enable: false
+      },
+      preview: {
+        background: {
+          default: '',
+          api: ''
+        },
+        motto: {
+          default: '我在开了灯的床头下，想问问自己的心啊。',
+          typing: true,
+          api: 'https://v2.jinrishici.com/one.json',
+          data_contents: '["data","content"]'
+        },
+      },
+      qrcode: {
+        enable: true,
+        type: 'url',
+        image: 'https://pic.izhaoo.com/weapp-code.jpg',
+      },
+      toc: {
+        enable: true
+      },
+      scrollbar: {
+        type: 'default'
+      },
+      notification: {
+        enable: false,
+        delay: 4500,
+        list: '',
+        page_white_list: '',
+        page_black_list: ''
+      },
+      search: {
+        enable: false,
+        path: ''
+      }
+    }
+  </script>
+
+  
+
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="lock-screen">
+  <div class="loading"></div>
+  
+    
+
+
+  <nav class="navbar">
+    <div class="left">
+      
+        <i class="iconfont iconhome j-navbar-back-home"></i>
+      
+      
+        <i class="iconfont iconqrcode j-navbar-qrcode"></i>
+      
+      
+        <i class="iconfont iconmoono" id="color-toggle" color-toggle="light"></i>
+      
+      
+    </div>
+    <div class="center">一道有趣的CTF赛题-unicode引发的WebAssembly与js交互问题</div>
+    <div class="right">
+      <i class="iconfont iconmenu j-navbar-menu"></i>
+    </div>
+    
+      <div id="qrcode-navbar"></div>
+    
+  </nav>
+
+  
+  
+
+<nav class="menu">
+  <div class="menu-container">
+    <div class="menu-close">
+      <i class="iconfont iconbaseline-close-px"></i>
+    </div>
+    <ul class="menu-content"><li class="menu-item">
+        <a href="/ " class="underline "> 首页</a>
+      </li><li class="menu-item">
+        <a href="/galleries/ " class="underline "> 摄影</a>
+      </li><li class="menu-item">
+        <a href="/archives/ " class="underline "> 归档</a>
+      </li><li class="menu-item">
+        <a href="/tags/ " class="underline "> 标签</a>
+      </li><li class="menu-item">
+        <a href="/categories/ " class="underline "> 分类</a>
+      </li><li class="menu-item">
+        <a href="/about/ " class="underline "> 关于</a>
+      </li></ul>
+    
+      <div class="menu-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+    
+  </div>
+</nav>
+  <main id="main">
+  <div class="article-wrap">
+    <div class="row container">
+      <div class="col-xl-3"></div>
+      <div class="col-xl-6"><article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="/images/theme/post-image.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">一道有趣的CTF赛题-unicode引发的WebAssembly与js交互问题</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>October 20, 2022</span>
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>4798</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        <blockquote>
+<p>一万年前投在tttang上的<a target="_blank" rel="noopener" href="https://tttang.com/archive/1434/">一篇文章</a>，转载到自己博客上</p>
+<p>重看一遍发现有很多地方说的不够严谨深入……但是懒得改了</p>
+<p>主要是想重新经营下自己的博客了，先拿这篇凑数吧</p>
+</blockquote>
+<h1 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h1><p>在前几天的DiceCTF里，遇到了一道关于WebAssembly的题目。解题时利用Unicode字符的转换问题，使前端js脚本与WebAssembly进行交互时出现异常，以达到XSS的效果。</p>
+<p>解题时也了解了一些关于<code>WebAssembly</code>的知识，算是有所收获</p>
+<h1 id="0x01-WebAssembly介绍"><a href="#0x01-WebAssembly介绍" class="headerlink" title="0x01 WebAssembly介绍"></a>0x01 WebAssembly介绍</h1><p>在看题目之前，我们先来了解一下WebAssembly是什么</p>
+<p>按照<a target="_blank" rel="noopener" href="https://webassembly.org/">WebAssembly官网</a>的介绍：</p>
+<blockquote>
+<p>WebAssembly/wasm WebAssembly 或者 wasm 是一个可移植、体积小、加载快并且兼容 Web 的全新格式</p>
+<p>WebAssembly 有一套完整的语义，实际上 wasm 是体积小且加载快的二进制格式， 其目标就是充分发挥硬件能力以达到原生执行效率</p>
+<p>WebAssembly 运行在一个沙箱化的执行环境中，甚至可以在现有的 JavaScript 虚拟机中实现。在web环境中，WebAssembly将会严格遵守同源策略以及浏览器安全策略。</p>
+<p>WebAssembly 设计了一个非常规整的文本格式用来、调试、测试、实验、优化、学习、教学或者编写程序。可以以这种文本格式在web页面上查看wasm模块的源码。</p>
+<p>WebAssembly 在 web 中被设计成无版本、特性可测试、向后兼容的。WebAssembly 可以被 JavaScript 调用，进入 JavaScript 上下文，也可以像 Web API 一样调用浏览器的功能。当然，WebAssembly 不仅可以运行在浏览器上，也可以运行在非web环境下。</p>
+</blockquote>
+<p>因为官方介绍说的不太人话，人类比较难读懂，所以再贴一段别的地方找的介绍：</p>
+<blockquote>
+<p>WebAssembly（缩写为 wasm）是一种使用非 JavaScript 代码，并使其在浏览器中运行的方法。这些代码可以是 C、C++ 或 Rust 等。它们会被编译进你的浏览器，在你的 CPU 上以接近原生的速度运行。这些代码的形式是二进制文件，你可以直接在 JavaScript 中将它们当作模块来用。</p>
+</blockquote>
+<p>概括一下重点：WebAssembly与js一样可以在浏览器上运行，而且由于其更“底层”，所以会有运行速度上的优势。</p>
+<p>速度优势也是WebAssembly的主要卖点。</p>
+<h1 id="0x02-解题"><a href="#0x02-解题" class="headerlink" title="0x02 解题"></a>0x02 解题</h1><h2 id="DiceCTF2022-blazingfast"><a href="#DiceCTF2022-blazingfast" class="headerlink" title="[DiceCTF2022]blazingfast"></a>[DiceCTF2022]blazingfast</h2><p>题目主页是一个WebAssembly实现的大小写转换器，可以把输入的句子转换成大小写交替的形式</p>
+<p><img   class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_6646a5ee8d44b7174ac091f2a4371f4d.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>还给出了一个adminbot页面，可以让带有bot访问url，不过必须符合<code>/^https:\/\/blazingfast\.mc\.ax\//</code>的正则，也就是只能访问上面说的那个大小写转换器</p>
+<p><img   class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_3e45d8b630c365f1544b91ed112ddc8d.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>可以从给出的源码里看到flag就在bot的localStorage中</p>
+<p><img   class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_73ba50cfea01b7e8ed142df8e92c5acf.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>所以本题的思路很清晰：通过xss，让bot向我们发送flag就行了。</p>
+<h2 id="业务逻辑"><a href="#业务逻辑" class="headerlink" title="业务逻辑"></a>业务逻辑</h2><p>本题中直接给出了WebAssembly的c语言源码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs c-like">int length, ptr = 0;<br>char buf[1000];<br><br>void init(int size) &#123;<br>	length = size;<br>	ptr = 0;<br>&#125;<br><br>char read() &#123;<br>	return buf[ptr++];<br>&#125;<br><br>void write(char c) &#123;<br>	buf[ptr++] = c;<br>&#125;<br><br>int mock() &#123;<br>	for (int i = 0; i &lt; length; i ++) &#123;<br>		if (i % 2 == 1 &amp;&amp; buf[i] &gt;= 65 &amp;&amp; buf[i] &lt;= 90) &#123;<br>			buf[i] += 32;<br>		&#125;<br><br>		if (buf[i] == &#x27;&lt;&#x27; || buf[i] == &#x27;&gt;&#x27; || buf[i] == &#x27;&amp;&#x27; || buf[i] == &#x27;&quot;&#x27;) &#123;<br>			return 1;<br>		&#125;<br>	&#125;<br><br>	ptr = 0;<br><br>	return 0;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>同时通过网页中的js代码可以看到与WebAssembly的交互过程</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">let</span> blazingfast = <span class="hljs-literal">null</span>;<br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mock</span>(<span class="hljs-params">str</span>) </span>&#123;<br>	blazingfast.init(str.length);<br><br>	<span class="hljs-keyword">if</span> (str.length &gt;= <span class="hljs-number">1000</span>) <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;Too long!&#x27;</span>;<br><br>	<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> c <span class="hljs-keyword">of</span> str.toUpperCase()) &#123;<br>		<span class="hljs-keyword">if</span> (c.charCodeAt(<span class="hljs-number">0</span>) &gt; <span class="hljs-number">128</span>) <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;Nice try.&#x27;</span>;<br>		blazingfast.write(c.charCodeAt(<span class="hljs-number">0</span>));<br>	&#125;<br><br>	<span class="hljs-keyword">if</span> (blazingfast.mock() == <span class="hljs-number">1</span>) &#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;No XSS for you!&#x27;</span>;<br>	&#125; <span class="hljs-keyword">else</span> &#123;<br>		<span class="hljs-keyword">let</span> mocking = <span class="hljs-string">&#x27;&#x27;</span>, buf = blazingfast.read();<br><br>		<span class="hljs-keyword">while</span>(buf != <span class="hljs-number">0</span>) &#123;<br>			mocking += <span class="hljs-built_in">String</span>.fromCharCode(buf);<br>			buf = blazingfast.read();<br>		&#125;<br><br>		<span class="hljs-keyword">return</span> mocking;<br>	&#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">demo</span>(<span class="hljs-params">str</span>) </span>&#123;<br>	<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;result&#x27;</span>).innerHTML = mock(str);<br>&#125;<br><br>WebAssembly.instantiateStreaming(fetch(<span class="hljs-string">&#x27;/blazingfast.wasm&#x27;</span>)).then(<span class="hljs-function">(<span class="hljs-params">&#123; instance &#125;</span>) =&gt;</span> &#123;	<br>	blazingfast = instance.exports;<br><br>	<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;demo-submit&#x27;</span>).onclick = <span class="hljs-function">() =&gt;</span> &#123;<br>		demo(<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;demo&#x27;</span>).value);<br>	&#125;<br><br>	<span class="hljs-keyword">let</span> query = <span class="hljs-keyword">new</span> URLSearchParams(<span class="hljs-built_in">window</span>.location.search).get(<span class="hljs-string">&#x27;demo&#x27;</span>);<br><br>	<span class="hljs-keyword">if</span> (query) &#123;<br>		<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;demo&#x27;</span>).value = query;<br>		demo(query);<br>	&#125;<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<p>大致的功能实现逻辑如下：</p>
+<p>前端js获取用户输入的字符串，以该字符串的长度初始化wasm程序的length值<br>–&gt;js将用户输入转换成大写后写入wasm的buf数组<br>–&gt;wasm程序将buf数组中的字符转成大小写交替的形式<br>–&gt;js读取wasm的buf数组，将字符串输出在界面中</p>
+<p>有三个过滤点：<br>字符串长度不能超过1000<br>字符的unicode编码值不能超过128<br>不能含有<code>&lt;</code> <code>&gt;</code> <code>&amp;</code> <code>&quot;</code></p>
+<p>其中主要是第三个过滤点防止了我们进行XSS，后续考虑怎么绕过这个过滤</p>
+<h2 id="代码审计"><a href="#代码审计" class="headerlink" title="代码审计"></a>代码审计</h2><p>我们细看wasm源码中的mock函数部分</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c-like">int mock() &#123;<br>	for (int i = 0; i &lt; length; i ++) &#123;<br>		if (i % 2 == 1 &amp;&amp; buf[i] &gt;= 65 &amp;&amp; buf[i] &lt;= 90) &#123;<br>			buf[i] += 32;<br>		&#125;<br><br>		if (buf[i] == &#x27;&lt;&#x27; || buf[i] == &#x27;&gt;&#x27; || buf[i] == &#x27;&amp;&#x27; || buf[i] == &#x27;&quot;&#x27;) &#123;<br>			return 1;<br>		&#125;<br>	&#125;<br><br>	ptr = 0;<br><br>	return 0;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>对字符串的处理进行到<code>length</code>处就停止了，但是js代码在读取的时候</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">while</span>(buf != <span class="hljs-number">0</span>) &#123;<br>	mocking += <span class="hljs-built_in">String</span>.fromCharCode(buf);<br>	buf = blazingfast.read();<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>却是一直读取到\0为止。</p>
+<p>也就是说，如果我们能构造一个特殊字符串，使<code>length</code>的值比传给wasm的字符串的真实长度要小，就能使<code>length</code>之后的字符不被检查</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> c <span class="hljs-keyword">of</span> str.toUpperCase()) &#123;<br>	<span class="hljs-keyword">if</span> (c.charCodeAt(<span class="hljs-number">0</span>) &gt; <span class="hljs-number">128</span>) <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;Nice try.&#x27;</span>;<br>	blazingfast.write(c.charCodeAt(<span class="hljs-number">0</span>));<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>虽然这里限制了字符的unicode值不能大于128，但是多亏了这个<code>toUpperCase</code>方法，我们能够利用一些奇技淫巧来进行下一步操作</p>
+<h2 id="神奇的Unicode大小写转换"><a href="#神奇的Unicode大小写转换" class="headerlink" title="神奇的Unicode大小写转换"></a>神奇的Unicode大小写转换</h2><p><a target="_blank" rel="noopener" href="https://dev.to/jagracey/hacking-github-s-auth-with-unicode-s-turkish-dotless-i-460n">这篇文章</a>提到：某些unicode字符会在大小写转换时被转成英文字母。</p>
+<p>更神奇的是，甚至有的unicode字符，会在转换后变成两个甚至三个英文字母！</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-string">&#x27;ß&#x27;</span>.toLowerCase() <span class="hljs-comment">// &#x27;ss&#x27;</span><br><span class="hljs-string">&#x27;ß&#x27;</span>.toLowerCase() === <span class="hljs-string">&#x27;SS&#x27;</span>.toLowerCase() <span class="hljs-comment">// true</span><br></code></pre></td></tr></table></figure>
+<p><img   class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_a6196fb391ef0d1658c664b39cd9d1da.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<h2 id="XSS"><a href="#XSS" class="headerlink" title="XSS"></a>XSS</h2><p>如果我们在输入的字符串中添加这些特殊字符，js获取并告知wasm的长度就会比转换成大写后字符串的真实长度要小，从而绕过过滤！</p>
+<p><img   class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_802ccd3600b6183f5c8751c58e43ccb5.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>虽然payload会全部被转成大写，不过我们可以通过实体编码的方式解决</p>
+<p><img    class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_c3a16ccc65d49317c8c443d4605dddab.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">alert(1)</span></p>
+<p>最后使用一个观感极佳（？）的payload成功获取flag<br><img   class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_c312493fec90825efa7546bfaa4c55f7.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ><br><img   class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_118bdba58d8ee66c2212ada5ab26b8b3.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ><br><img   class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_81eaeecec45f581fe6ece72f1608ed53.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<h1 id="0x03-总结"><a href="#0x03-总结" class="headerlink" title="0x03 总结"></a>0x03 总结</h1><p>比赛时临时学了一下wasm，不过好在对wasm的考察程度并不深，最后靠一点运气和灵感做出来了。比赛时也找到一些其他的关于wasm安全的资料，提到了一些关于wasm的pwn技巧，这里就不作过多延展了</p>
+<p>可能是国际比赛的原因，还吃了网络的亏……一开始在自己的服务器上监听，笑死，根本打不通，还以为是自己payload写的有问题，改了半天。换了好几个平台试，最后用一开始的payload打通了……</p>
+<p>这道题从本质上来说，还是接口调用时的处理没有做好才导致问题出现</p>
+<p>最后，再默念一遍——<code>开发和安全缺一不可！</code></p>
+
+      </section>
+      <section class="extra">
+        
+        
+          <section class="donate">
+  <div id="qrcode-donate">
+    <img   class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_89b1b34b4475a04c8347112da9bc959f.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >
+  </div>
+  <div class="icon">
+    <a href="javascript:;" id="alipay"><i class="iconfont iconalipay"></i></a>
+    <a href="javascript:;" id="wechat"><i class="iconfont iconwechat-fill"></i></a>
+  </div>
+</section>
+        
+        
+  <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebAssembly/" rel="tag">WebAssembly</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li></ul> 
+
+        
+  <nav class="nav">
+    <a href="/2099/01/10/my2021/"><i class="iconfont iconleft"></i>2021年度划水报告</a>
+    <a href="/2022/04/27/Merak-Me/">MRCTF后记-Merak&Me<i class="iconfont iconright"></i></a>
+  </nav>
+
+      </section>
+      
+    </section>
+  </div>
+</article></div>
+      <div class="col-xl-3">
+        
+          
+  <aside class="toc-wrap">
+    <h3 class="toc-title">文章目录：</h3>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x00-%E5%89%8D%E8%A8%80"><span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-WebAssembly%E4%BB%8B%E7%BB%8D"><span class="toc-text">0x01 WebAssembly介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-%E8%A7%A3%E9%A2%98"><span class="toc-text">0x02 解题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#DiceCTF2022-blazingfast"><span class="toc-text">[DiceCTF2022]blazingfast</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91"><span class="toc-text">业务逻辑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1"><span class="toc-text">代码审计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A5%9E%E5%A5%87%E7%9A%84Unicode%E5%A4%A7%E5%B0%8F%E5%86%99%E8%BD%AC%E6%8D%A2"><span class="toc-text">神奇的Unicode大小写转换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#XSS"><span class="toc-text">XSS</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-%E6%80%BB%E7%BB%93"><span class="toc-text">0x03 总结</span></a></li></ol>
+  </aside>
+
+        
+      </div>
+    </div>
+  </div>
+</main>
+  
+
+<footer class="footer">
+  <div class="footer-social"><a 
+        href="tencent://message/?Menu=yes&uin=3067733270 "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#12B7F5'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconQQ "></i>
+      </a><a 
+        href="javascript:; "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#09BB07'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconwechat-fill "></i>
+      </a><a 
+        href="mailto:3067733270@qq.com "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color=#FF3B00" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconmail"></i>
+      </a></div>
+  
+    <div class="footer-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+  
+</footer>
+  
+      <div class="fab fab-plus">
+    <i class="iconfont iconplus"></i>
+  </div>
+  
+  
+  <div class="fab fab-up">
+    <i class="iconfont iconcaret-up"></i>
+  </div>
+  
+  
+  
+    
+<script src="/js/color-mode.js"></script>
+
+  
+  
+</body>
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+
+
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+
+
+
+
+<script src="/js/utils.js"></script>
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
