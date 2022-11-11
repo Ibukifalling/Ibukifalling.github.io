@@ -1,0 +1,423 @@
+
+
+<!DOCTYPE html>
+<html lang="en" color-mode=light>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Nodejs调试端口rce&amp;CVE复现（水文） - Welcome to fallingblog</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="google" content="notranslate" />
+  
+  <meta name="description" content="RCE via Nodejs debug port &...">
+  <meta name="author" content="Ibukifalling">
+  <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" sizes="180x180">
+  <meta rel="mask-icon" href="/images/icons/stun-logo.svg" color="#333333">
+  
+    <meta rel="msapplication-TileImage" content="/images/icons/favicon-144x144.png">
+    <meta rel="msapplication-TileColor" content="#000000">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1445822_r673sha78lq.css">
+
+  
+
+  
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  
+
+  
+    
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/xcode.min.css" name="highlight-style" mode="light">
+
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/solarized-dark.min.css" name="highlight-style" mode="dark">
+
+      
+  
+
+  <script>
+    var CONFIG = window.CONFIG || {};
+    var ZHAOO = window.ZHAOO || {};
+    CONFIG = {
+      isHome: false,
+      fancybox: true,
+      pjax: false,
+      lazyload: {
+        enable: true,
+        only_post: 'false',
+        loading: '[object Object]'
+      },
+      donate: {
+        enable: true,
+        alipay: 'https://md.buptmerak.cn/uploads/upload_89b1b34b4475a04c8347112da9bc959f.png',
+        wechat: 'http://qungz.photo.store.qq.com/qun-qungz/V529aeGH0GBCCT3kuwad344GhY0Vrm5T/V5bCgAxMDkwNzMxNjgyk8C6YYUouDg!/800?w5=1066&amp;h5=1021&amp;rf=viewer_421'
+      },
+      galleries: {
+        enable: true
+      },
+      fab: {
+        enable: true,
+        always_show: false
+      },
+      carrier: {
+        enable: true
+      },
+      daovoice: {
+        enable: false
+      },
+      preview: {
+        background: {
+          default: '',
+          api: ''
+        },
+        motto: {
+          default: '我在开了灯的床头下，想问问自己的心啊。',
+          typing: true,
+          api: 'https://v2.jinrishici.com/one.json',
+          data_contents: '["data","content"]'
+        },
+      },
+      qrcode: {
+        enable: true,
+        type: 'url',
+        image: 'https://pic.izhaoo.com/weapp-code.jpg',
+      },
+      toc: {
+        enable: true
+      },
+      scrollbar: {
+        type: 'default'
+      },
+      notification: {
+        enable: false,
+        delay: 4500,
+        list: '',
+        page_white_list: '',
+        page_black_list: ''
+      },
+      search: {
+        enable: false,
+        path: ''
+      }
+    }
+  </script>
+
+  
+
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="lock-screen">
+  <div class="loading"></div>
+  
+    
+
+
+  <nav class="navbar">
+    <div class="left">
+      
+        <i class="iconfont iconhome j-navbar-back-home"></i>
+      
+      
+        <i class="iconfont iconqrcode j-navbar-qrcode"></i>
+      
+      
+        <i class="iconfont iconmoono" id="color-toggle" color-toggle="light"></i>
+      
+      
+    </div>
+    <div class="center">Nodejs调试端口rce&amp;CVE复现（水文）</div>
+    <div class="right">
+      <i class="iconfont iconmenu j-navbar-menu"></i>
+    </div>
+    
+      <div id="qrcode-navbar"></div>
+    
+  </nav>
+
+  
+  
+
+<nav class="menu">
+  <div class="menu-container">
+    <div class="menu-close">
+      <i class="iconfont iconbaseline-close-px"></i>
+    </div>
+    <ul class="menu-content"><li class="menu-item">
+        <a href="/ " class="underline "> 首页</a>
+      </li><li class="menu-item">
+        <a href="/galleries/ " class="underline "> 摄影</a>
+      </li><li class="menu-item">
+        <a href="/archives/ " class="underline "> 归档</a>
+      </li><li class="menu-item">
+        <a href="/tags/ " class="underline "> 标签</a>
+      </li><li class="menu-item">
+        <a href="/categories/ " class="underline "> 分类</a>
+      </li><li class="menu-item">
+        <a href="/about/ " class="underline "> 关于</a>
+      </li></ul>
+    
+      <div class="menu-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+    
+  </div>
+</nav>
+  <main id="main">
+  <div class="article-wrap">
+    <div class="row container">
+      <div class="col-xl-3"></div>
+      <div class="col-xl-6"><article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="/images/theme/post-image.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">Nodejs调试端口rce&amp;CVE复现（水文）</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>November 11, 2022</span>
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>3529</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        <h1 id="RCE-via-Nodejs-debug-port-amp-DNS-Rebinding"><a href="#RCE-via-Nodejs-debug-port-amp-DNS-Rebinding" class="headerlink" title="RCE via Nodejs debug port &amp; DNS Rebinding"></a>RCE via Nodejs debug port &amp; DNS Rebinding</h1><p>[TOC]</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>翻Nodejs的历史漏洞的时候翻到一个CVE<br><img   class="lazyload" data-original="https://md.byr.moe/uploads/upload_c90636993f9d2d8b969e427c1ce384ea.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>漏洞描述中的这个美丽的域名深深吸引住了我</p>
+<p><code>â€œlocalhost6â€</code></p>
+<p>于是仔细看了一下这个CVE以及前后两个相关的CVE（CVE-2018-7160&amp;CVE-2022-32212）</p>
+<blockquote>
+<p>本文将介绍如何通过Nodejs的debug端口进行rce以及三个与之相关的CVE：CVE-2018-7160，CVE-2021-22884，CVE-2022-32212</p>
+</blockquote>
+<h2 id="Nodejs-debugger"><a href="#Nodejs-debugger" class="headerlink" title="Nodejs debugger"></a>Nodejs debugger</h2><p>在介绍三个CVE之前，我们先来看一下Nodejs的Inspector模块</p>
+<p>Nodejs在运行服务的时候，可以通过<code>--inspect</code>参数来开启一个debug端口</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">node --inspect app.js<br><br>Debugger listening on ws://127.0.0.1:9229/bd095ef7-8094-4472-a2c6-838c13d5ca6a<br>For <span class="hljs-built_in">help</span>, see: https://nodejs.org/en/docs/inspector<br>Example app listening on port 3000<br></code></pre></td></tr></table></figure>
+
+<p>默认端口为9229</p>
+<p><a target="_blank" rel="noopener" href="https://nodejs.org/en/docs/inspector">官方文档</a>中给出了不同工具使用这个端口的方法，接下来我们以Crhome为例</p>
+<p>在Chrome地址栏中输入<code>chrome://inspect/#devices</code>,这时可以看到本地开启调试的服务</p>
+<p><img   class="lazyload" data-original="https://md.byr.moe/uploads/upload_30183018d905b4bcdef0b6ccaa5619d9.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>点击inspect，我们将会打开一个debug窗口，此时可以调试程序并执行任意代码</p>
+<p><img   class="lazyload" data-original="https://md.byr.moe/uploads/upload_aee905c47f3dd1979d3786653098f14e.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<h3 id="XSS-gt-RCE"><a href="#XSS-gt-RCE" class="headerlink" title="XSS -&gt; RCE ?"></a>XSS -&gt; RCE ?</h3><p>那除了使用Devtool，我们能否通过script来直接访问这个端口进行rce呢？</p>
+<p>我们观察前面开启服务时的提示信息</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">Debugger</span> listening <span class="hljs-literal">on</span> ws://<span class="hljs-number">127.0.0.1:9229</span>/bd<span class="hljs-number">095</span>ef<span class="hljs-number">7</span>-<span class="hljs-number">8094</span>-<span class="hljs-number">4472</span>-a<span class="hljs-number">2</span>c<span class="hljs-number">6</span>-<span class="hljs-number">838</span>c<span class="hljs-number">13</span>d<span class="hljs-number">5</span>ca<span class="hljs-number">6</span>a<br></code></pre></td></tr></table></figure>
+
+<p>在此可以看到这个debugger运行时使用的是WebSocket协议，而ws是可以跨域的</p>
+<p>同时我们可以在<a target="_blank" rel="noopener" href="https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#method-evaluate">Chrome DevTools Protocol文档</a>找到Runtime.evaluate</p>
+<p>我们在本地开启debug端口的状态下去访问以下页面</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs htmlmixed">poc page<br>&lt;script&gt;<br>var ws = new WebSocket(&quot;ws://127.0.0.1:9229/bd095ef7-8094-4472-a2c6-838c13d5ca6a&quot;);<br>ws.onopen = function() &#123;<br>  data = &#x27;require = process.mainModule.require; execSync = require(&quot;child_process&quot;).execSync; execSync(&quot;open /System/Applications/Calculator.app&quot;);&#x27;<br>  ws.send(JSON.stringify(&#123;&quot;id&quot;:1,&quot;method&quot;:&quot;Runtime.evaluate&quot;,&quot;params&quot;:&#123;&quot;expression&quot;: data&#125;&#125;))<br>&#125;<br>&lt;/script&gt;<br></code></pre></td></tr></table></figure>
+
+<p>发现是可以成功执行的</p>
+<p><img   class="lazyload" data-original="https://md.byr.moe/uploads/upload_01a40a66e5563111b950ce20dc1f9dd2.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>但是webSocketDebuggerUrl后带有的uuid是未知的，想要得到该uuid，需要访问debug端口的<code>/json</code>路由</p>
+<p><img   class="lazyload" data-original="https://md.byr.moe/uploads/upload_3c5e0de272c69087432e143209c03168.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>但是这样的话就需要重新面临同源的问题，根据同源策略，其他来源的javascript是无法取得<code>127.0.0.1:9229/json</code>的响应的</p>
+<p>由此延伸出以下几个CVE</p>
+<h2 id="CVE-2018-7160"><a href="#CVE-2018-7160" class="headerlink" title="CVE-2018-7160"></a>CVE-2018-7160</h2><p><a target="_blank" rel="noopener" href="https://nodejs.org/en/blog/vulnerability/march-2018-security-releases/#node-js-inspector-dns-rebinding-vulnerability-cve-2018-7160">https://nodejs.org/en/blog/vulnerability/march-2018-security-releases/#node-js-inspector-dns-rebinding-vulnerability-cve-2018-7160</a></p>
+<p>在nodejs官方给出的CVE情报中写到：</p>
+<blockquote>
+<p>Node.js 6.x and later include a debugger protocol (also known as “inspector”) that can be activated by the –inspect and related command line flags. This debugger service was vulnerable to a DNS rebinding attack which could be exploited to perform remote code execution.</p>
+</blockquote>
+<p>即基于DNS rebinding绕过同源策略从而进行rce</p>
+<p>虽然理论上来说，如果攻击者能够实施DNS rebinding，那已经不是nodejs的问题了，但nodejs官方也不能排除用户被攻击的可能性。</p>
+<p>于是Nodejs官方给出了这样的修复：</p>
+<blockquote>
+<p>We updated the inspector implementation with an additional check for the browser provided Host header. If the connection is via a hostname, i.e. subject to DNS resolution, we ensure that the connection is to either localhost or localhost6 precisely.</p>
+</blockquote>
+<p>在连接websocket时增加对Header中<code>Host</code>字段的验证</p>
+<p>后面的两个CVE都是对这个验证的bypass</p>
+<h2 id="CVE-2021-22884"><a href="#CVE-2021-22884" class="headerlink" title="CVE-2021-22884"></a>CVE-2021-22884</h2><p>于是我们来到前言里提到的这个CVE和这个神奇的域名</p>
+<p><img   class="lazyload" data-original="https://md.byr.moe/uploads/upload_c90636993f9d2d8b969e427c1ce384ea.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>先说结论：</p>
+<p>。。。CVE情报写错了（无语=_=b）</p>
+<p>笔者一开始以为<code>â€œlocalhost6â€</code>是一个什么神奇的利用unicode特性进行的绕过，然后去找到了这个CVE的修复commit</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/nodejs/node/commit/43ae9c46c3">https://github.com/nodejs/node/commit/43ae9c46c3</a></p>
+<p><img   class="lazyload" data-original="https://md.byr.moe/uploads/upload_bf4c9c8d38869e3282cd9532cb1328f2.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>。。。发现修复里的域名是localhost6</p>
+<p>再找别家的CVE情报看看</p>
+<p><img   class="lazyload" data-original="https://md.byr.moe/uploads/upload_f16fd7428b996a8de4e300af66ff5cfe.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>写的也只是localhost6</p>
+<p><a target="_blank" rel="noopener" href="https://nodejs.org/en/blog/vulnerability/february-2021-security-releases/#dns-rebinding-in-inspect-cve-2021-22884">官方公告</a>里也是localhost6，没有奇怪的符号</p>
+<p>。。。。基本可以确认是贴CVE情报时贴错了<br>（我不理解什么样的剪切板会把引号变成<code>â€œ</code>）</p>
+<p>回到这个CVE，这个CVE的意思就是：inspector对Host校验的白名单里有localhost6这个域名，但是有些机器的/etc/hosts中并没有存这个域名（比如笔者的个人电脑就是没有的），攻击者可以使用这个域名继续进行DNS rebinding达到CVE-2018-7160的攻击</p>
+<h2 id="CVE-2022-32212"><a href="#CVE-2022-32212" class="headerlink" title="CVE-2022-32212"></a>CVE-2022-32212</h2><p><a target="_blank" rel="noopener" href="https://nodejs.org/en/blog/vulnerability/july-2022-security-releases/#dns-rebinding-in-inspect-via-invalid-ip-addresses-high-cve-2022-32212">https://nodejs.org/en/blog/vulnerability/july-2022-security-releases/#dns-rebinding-in-inspect-via-invalid-ip-addresses-high-cve-2022-32212</a></p>
+<p>该CVE依然是一个对Host检查的绕过：检查时并没有验证ip是否合法，譬如10.0.2.555，当浏览器访问该ip时会发起一个Dns request，攻击者可以在此时实施DNS rebinding</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/nodejs/node/commit/a1121b456c">https://github.com/nodejs/node/commit/a1121b456c</a></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>虽然理论上可以rce，但是利用条件实在有点苛刻……</p>
+<ul>
+<li>需要nodejs服务开启了debug端口</li>
+<li>需要利用DNS rebinding绕过同源获取到uuid（SSRF应该也可以？）</li>
+<li>需要执行在受害者机器上执行js（xss或者恶意页面）</li>
+</ul>
+<p>整体上利用难度较高，不过一旦成功利用可以rce，收益还是比较高的。</p>
+<h2 id="碎碎念"><a href="#碎碎念" class="headerlink" title="碎碎念"></a>碎碎念</h2><p>本来以为<code>â€œlocalhost6â€</code>是一个什么神奇的利用unicode进行的绕过，结果单纯是CVE情报写错了，有点小失望……</p>
+<p>博客好久没更新了，先更没啥技术含量的水文章，后面有空再慢慢打理起来吧</p>
+
+      </section>
+      <section class="extra">
+        
+        
+          <section class="donate">
+  <div id="qrcode-donate">
+    <img   class="lazyload" data-original="https://md.buptmerak.cn/uploads/upload_89b1b34b4475a04c8347112da9bc959f.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >
+  </div>
+  <div class="icon">
+    <a href="javascript:;" id="alipay"><i class="iconfont iconalipay"></i></a>
+    <a href="javascript:;" id="wechat"><i class="iconfont iconwechat-fill"></i></a>
+  </div>
+</section>
+        
+        
+  <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nodejs/" rel="tag">Nodejs</a></li></ul> 
+
+        
+  <nav class="nav">
+    <a href="/2099/01/10/my2021/"><i class="iconfont iconleft"></i>2021年度划水报告</a>
+    <a href="/2022/10/20/wasm/">一道有趣的CTF赛题-unicode引发的WebAssembly与js交互问题<i class="iconfont iconright"></i></a>
+  </nav>
+
+      </section>
+      
+    </section>
+  </div>
+</article></div>
+      <div class="col-xl-3">
+        
+          
+  <aside class="toc-wrap">
+    <h3 class="toc-title">文章目录：</h3>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#RCE-via-Nodejs-debug-port-amp-DNS-Rebinding"><span class="toc-text">RCE via Nodejs debug port &amp; DNS Rebinding</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nodejs-debugger"><span class="toc-text">Nodejs debugger</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#XSS-gt-RCE"><span class="toc-text">XSS -&gt; RCE ?</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CVE-2018-7160"><span class="toc-text">CVE-2018-7160</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CVE-2021-22884"><span class="toc-text">CVE-2021-22884</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CVE-2022-32212"><span class="toc-text">CVE-2022-32212</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A2%8E%E7%A2%8E%E5%BF%B5"><span class="toc-text">碎碎念</span></a></li></ol></li></ol>
+  </aside>
+
+        
+      </div>
+    </div>
+  </div>
+</main>
+  
+
+<footer class="footer">
+  <div class="footer-social"><a 
+        href="tencent://message/?Menu=yes&uin=3067733270 "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#12B7F5'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconQQ "></i>
+      </a><a 
+        href="javascript:; "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#09BB07'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconwechat-fill "></i>
+      </a><a 
+        href="mailto:3067733270@qq.com "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color=#FF3B00" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconmail"></i>
+      </a></div>
+  
+    <div class="footer-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+  
+</footer>
+  
+      <div class="fab fab-plus">
+    <i class="iconfont iconplus"></i>
+  </div>
+  
+  
+  <div class="fab fab-up">
+    <i class="iconfont iconcaret-up"></i>
+  </div>
+  
+  
+  
+    
+<script src="/js/color-mode.js"></script>
+
+  
+  
+</body>
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+
+
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+
+
+
+
+<script src="/js/utils.js"></script>
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
