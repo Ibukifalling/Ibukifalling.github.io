@@ -194,7 +194,7 @@
     <div class="head-info">
       <span class="post-info-item"><i class="iconfont iconcalendar"></i>June 07, 2023</span>
       
-      <span class="post-info-item"><i class="iconfont iconfont-size"></i>10313</span>
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>10307</span>
     </div>
   </div>
 </section>
@@ -227,7 +227,7 @@
 <p>其中关于设备root权限的获取，如果是使用模拟器，一般来说都可以找到直接带有root权限的镜像。如果是物理机，则需要根据具体的型号获取root权限（目前主流的方法是Magisk）</p>
 <p>笔者使用的手机是华为手机，安全性极高、难以root，（华为！）且考虑到刷root存在一定风险，故笔者从淘宝购入了一个二手小米手机，专门用于安卓应用的抓包</p>
 <p>（贴这个图是为了让老师相信是我自己写的）</p>
-<p><img    class="lazyload" data-original="https://md.byr.moe/uploads/upload_6d601408dee00c466fc73269860f1821.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">img</span></p>
+<p><img   class="lazyload" data-original="https://md.byr.moe/uploads/upload_6d601408dee00c466fc73269860f1821.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
 <p>在做好准备工作之后，先在电脑端对证书进行签名，以fiddler证书为例，在命令行中输入以下命令</p>
 <figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">openssl x509 -inform DER -subject_hash_old -<span class="hljs-keyword">in</span> <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">FiddlerRoot</span>.</span></span>cer<br></code></pre></td></tr></table></figure>
 
@@ -236,7 +236,7 @@
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">openssl</span> x<span class="hljs-number">509</span> -inform DER -text -in xxx.cer &gt; <span class="hljs-number">831</span>c<span class="hljs-number">74</span>f<span class="hljs-number">0</span>.<span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
 
 <p>最后编辑一下输出的文件，把 —–BEGIN CERTIFICATE—– 到最后的这部分移动到开头。</p>
-<p><img    class="lazyload" data-original="https://md.byr.moe/uploads/upload_32232707253e712b0ee6e498d8b722ab.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">img</span></p>
+<p><img   class="lazyload" data-original="https://md.byr.moe/uploads/upload_32232707253e712b0ee6e498d8b722ab.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
 <p>生成好证书后，使用adb将证书挂载到系统证书目录</p>
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">adb</span> push <span class="hljs-number">831</span>c<span class="hljs-number">74</span>f<span class="hljs-number">0</span>.<span class="hljs-number">0</span> /sdcard  <br><br><span class="hljs-attribute">adb</span> shell<br><br><span class="hljs-attribute">su</span><br><br><span class="hljs-attribute">mount</span> -o remount,rw /system<br><span class="hljs-comment">#切换到超级用户更改目录权限</span><br><br><span class="hljs-attribute">cp</span> /sdcard/<span class="hljs-number">831</span>c<span class="hljs-number">74</span>f<span class="hljs-number">0</span>.<span class="hljs-number">0</span> /system/etc/security/cacerts/<br><br><span class="hljs-attribute">chmod</span> <span class="hljs-number">644</span> /system/etc/security/cacerts/<span class="hljs-number">831</span>c<span class="hljs-number">74</span>f<span class="hljs-number">0</span>.<span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
 
