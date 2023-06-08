@@ -1,0 +1,445 @@
+
+
+<!DOCTYPE html>
+<html lang="en" color-mode=light>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Android_app_packet_capture - Welcome to fallingblog</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="google" content="notranslate" />
+  
+  <meta name="description" content="​        
+安卓应用的防抓包机制及简单绕过前言...">
+  <meta name="author" content="Ibukifalling">
+  <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" sizes="180x180">
+  <meta rel="mask-icon" href="/images/icons/stun-logo.svg" color="#333333">
+  
+    <meta rel="msapplication-TileImage" content="/images/icons/favicon-144x144.png">
+    <meta rel="msapplication-TileColor" content="#000000">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1445822_r673sha78lq.css">
+
+  
+
+  
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  
+
+  
+    
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/xcode.min.css" name="highlight-style" mode="light">
+
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/solarized-dark.min.css" name="highlight-style" mode="dark">
+
+      
+  
+
+  <script>
+    var CONFIG = window.CONFIG || {};
+    var ZHAOO = window.ZHAOO || {};
+    CONFIG = {
+      isHome: false,
+      fancybox: true,
+      pjax: false,
+      lazyload: {
+        enable: true,
+        only_post: 'false',
+        loading: '[object Object]'
+      },
+      donate: {
+        enable: true,
+        alipay: '/images/myimg/alipay.jpg',
+        wechat: '/images/myimg/wechat.png'
+      },
+      galleries: {
+        enable: true
+      },
+      fab: {
+        enable: true,
+        always_show: false
+      },
+      carrier: {
+        enable: true
+      },
+      daovoice: {
+        enable: false
+      },
+      preview: {
+        background: {
+          default: '',
+          api: ''
+        },
+        motto: {
+          default: '我在开了灯的床头下，想问问自己的心啊。',
+          typing: true,
+          api: 'https://v2.jinrishici.com/one.json',
+          data_contents: '["data","content"]'
+        },
+      },
+      qrcode: {
+        enable: true,
+        type: 'url',
+        image: 'https://pic.izhaoo.com/weapp-code.jpg',
+      },
+      toc: {
+        enable: true
+      },
+      scrollbar: {
+        type: 'default'
+      },
+      notification: {
+        enable: false,
+        delay: 4500,
+        list: '',
+        page_white_list: '',
+        page_black_list: ''
+      },
+      search: {
+        enable: false,
+        path: ''
+      }
+    }
+  </script>
+
+  
+
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="lock-screen">
+  <div class="loading"></div>
+  
+    
+
+
+  <nav class="navbar">
+    <div class="left">
+      
+        <i class="iconfont iconhome j-navbar-back-home"></i>
+      
+      
+        <i class="iconfont iconqrcode j-navbar-qrcode"></i>
+      
+      
+        <i class="iconfont iconmoono" id="color-toggle" color-toggle="light"></i>
+      
+      
+    </div>
+    <div class="center">Android_app_packet_capture</div>
+    <div class="right">
+      <i class="iconfont iconmenu j-navbar-menu"></i>
+    </div>
+    
+      <div id="qrcode-navbar"></div>
+    
+  </nav>
+
+  
+  
+
+<nav class="menu">
+  <div class="menu-container">
+    <div class="menu-close">
+      <i class="iconfont iconbaseline-close-px"></i>
+    </div>
+    <ul class="menu-content"><li class="menu-item">
+        <a href="/ " class="underline "> 首页</a>
+      </li><li class="menu-item">
+        <a href="/galleries/ " class="underline "> 摄影</a>
+      </li><li class="menu-item">
+        <a href="/archives/ " class="underline "> 归档</a>
+      </li><li class="menu-item">
+        <a href="/tags/ " class="underline "> 标签</a>
+      </li><li class="menu-item">
+        <a href="/categories/ " class="underline "> 分类</a>
+      </li><li class="menu-item">
+        <a href="/about/ " class="underline "> 关于</a>
+      </li></ul>
+    
+      <div class="menu-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+    
+  </div>
+</nav>
+  <main id="main">
+  <div class="article-wrap">
+    <div class="row container">
+      <div class="col-xl-3"></div>
+      <div class="col-xl-6"><article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="/images/myimg/HUAWEI.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">Android_app_packet_capture</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>June 07, 2023</span>
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>10328</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        <p>​        </p>
+<h1 id="安卓应用的防抓包机制及简单绕过"><a href="#安卓应用的防抓包机制及简单绕过" class="headerlink" title="安卓应用的防抓包机制及简单绕过"></a>安卓应用的防抓包机制及简单绕过</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这篇blog是我的移动终端安全期末作业，因为写了还蛮多的，我觉得不发一下可惜了，于是就搬运了</p>
+<h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><p>我们在进行渗透测试时，常常要进行抓包的操作。当我们在PC端上使用浏览器访问网页时，这个操作往往是轻松惬意且愉快的——一般直接在浏览器设置里把代理挂到抓包软件对应的端口上就可以了</p>
+<p><img    class="lazyload" data-original="https://md.byr.moe/uploads/upload_f24ab1da1fa082bd3fc3d709cc77bdd0.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">firefox的代理设置</span></p>
+<p>再麻烦一点的话，也只是在浏览器的证书信任里加上抓包软件的证书。</p>
+<p>进行完上述的操作后，我们就能对绝大部分网页进行抓包了——本质上来说，其实就是我们自己对自己进行了中间人攻击，将我们发送的数据包进行截获、重发、编辑等等操作</p>
+<p>但是，当我们尝试在移动设备上进行同样的操作时，往往会遇到各种各样的问题：譬如挂上代理之后app无法正常使用，又或者明明已经安装了抓包软件的证书依然无法抓取https包等等</p>
+<h2 id="防抓包机制"><a href="#防抓包机制" class="headerlink" title="防抓包机制"></a>防抓包机制</h2><p>市面上的各种应用层抓包软件的实现原理基本都是中间人攻击（MITM），包括大家常用的Burpsuite、Fiddler、Charles等知名抓包工具（Wireshark 类型的软件使用的网卡数据复制，只要是经过指定网卡都会被抓取）。</p>
+<p>出于对MITM的防范，不管是安卓系统本身还是安卓应用程序一般都会设置一些防抓包机制。这些防抓包机制客观上对恶意攻击有一定的防护作用，但同样也给我们对安卓应用进行测试增添了许多困难。</p>
+<h3 id="CA证书"><a href="#CA证书" class="headerlink" title="CA证书"></a>CA证书</h3><p>我们先来解决一下抓不到https包的问题</p>
+<blockquote>
+<p>MITM  Server要成为真正的Server，必须能够给指定域名签发公钥证书，且公钥证书能够通过系统的安全校验。比如Client发送了一条<a target="_blank" rel="noopener" href="https://www.baidu.com/%E7%9A%84%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%EF%BC%8CMITM">https://www.baidu.com/的网络请求，MITM</a> Server要伪装成百度的Server，必须持有<a target="_blank" rel="noopener" href="http://www.baidu.com域名的公钥证书并发给client,同时还要有与公钥相匹配的私钥./">www.baidu.com域名的公钥证书并发给Client，同时还要有与公钥相匹配的私钥。</a><br> MITM Server的处理方式是从第一个SSL/TLS握手包Client  Hello中提取出域名:<a target="_blank" rel="noopener" href="http://www.baidu.com,利用应用内置的ca证书创建www.baidu.com域名的公钥证书和私钥.创建的公钥证书在ssl/TLS%E6%8F%A1%E6%89%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E4%B8%AD%E5%8F%91%E7%BB%99Client%EF%BC%8CClient%E6%94%B6%E5%88%B0%E5%85%AC%E9%92%A5%E8%AF%81%E4%B9%A6%E5%90%8E%E4%BC%9A%E7%94%B1%E7%B3%BB%E7%BB%9F%E4%BC%9A%E5%AF%B9%E6%AD%A4%E8%AF%81%E4%B9%A6%E8%BF%9B%E8%A1%8C%E6%A0%A1%E9%AA%8C%EF%BC%8C%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E6%98%AF%E7%99%BE%E5%BA%A6%E5%85%AC%E5%8F%B8%E6%8C%81%E6%9C%89%E7%9A%84%E8%AF%81%E4%B9%A6%EF%BC%8C%E4%BD%86%E5%BE%88%E6%98%8E%E6%98%BE%E8%BF%99%E4%B8%AA%E8%AF%81%E4%B9%A6%E6%98%AF%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E4%BC%AA%E9%80%A0%E7%9A%84%E3%80%82%E4%B8%BA%E4%BA%86%E8%83%BD%E5%A4%9F%E8%AE%A9%E7%B3%BB%E7%BB%9F%E6%A0%A1%E9%AA%8C%E5%85%AC%E9%92%A5%E8%AF%81%E4%B9%A6%E6%97%B6%E8%AE%A4%E4%B8%BA%E8%AF%81%E4%B9%A6%E6%98%AF%E7%9C%9F%E5%AE%9E%E6%9C%89%E6%95%88%E7%9A%84%EF%BC%8C%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E5%B0%86%E6%8A%93%E5%8C%85%E5%BA%94%E7%94%A8%E5%86%85%E7%BD%AE%E7%9A%84CA%E8%AF%81%E4%B9%A6%E6%89%8B%E5%8A%A8%E5%AE%89%E8%A3%85%E5%88%B0%E7%B3%BB%E7%BB%9F%E4%B8%AD%EF%BC%8C%E4%BD%9C%E4%B8%BA%E7%9C%9F%E6%AD%A3%E7%9A%84%E8%AF%81%E4%B9%A6%E5%8F%91%E8%A1%8C%E5%95%86%EF%BC%88CA%EF%BC%89%EF%BC%8C%E5%8D%B3%E6%B4%97%E7%99%BD%E3%80%82%E8%BF%99%E5%B0%B1%E6%98%AF%E4%B8%BA%E4%BB%80%E4%B9%88%EF%BC%8CHTTPS%E6%8A%93%E5%8C%85%E4%B8%80%E5%AE%9A%E8%A6%81%E5%85%88%E5%AE%89%E8%A3%85CA%E8%AF%81%E4%B9%A6%E3%80%82">www.baidu.com，利用应用内置的CA证书创建www.baidu.com域名的公钥证书和私钥。创建的公钥证书在SSL/TLS握手的过程中发给Client，Client收到公钥证书后会由系统会对此证书进行校验，判断是否是百度公司持有的证书，但很明显这个证书是抓包工具伪造的。为了能够让系统校验公钥证书时认为证书是真实有效的，我们需要将抓包应用内置的CA证书手动安装到系统中，作为真正的证书发行商（CA），即洗白。这就是为什么，HTTPS抓包一定要先安装CA证书。</a></p>
+</blockquote>
+<p>当我们在PC端上使用firefox浏览器进行抓包时，我们直接使用浏览器的证书管理功能就可以安装CA证书。但当我们在移动设备上安装证书后，有时仍然会出现抓取不到https包的问题。这是因为<strong>Android从7.0开始系统不再信任用户CA证书</strong>（应用targetSdkVersion &gt;= 24时生效，如果targetSdkVersion &lt;  24即使系统是7.0+依然会信任）。也就是说即使安装了用户CA证书，在Android 7.0+的机器上，targetSdkVersion  &gt;= 24的应用的HTTPS包就抓不到了。</p>
+<h3 id="升级用户证书为系统证书"><a href="#升级用户证书为系统证书" class="headerlink" title="升级用户证书为系统证书"></a>升级用户证书为系统证书</h3><p>既然系统不信任用户证书，那么我们就考虑将用户证书升级为系统证书。</p>
+<p>准备工作：</p>
+<ul>
+<li>安装adb工具<ul>
+<li>adb全称 Android Debug Bridge（安卓调试桥） tools。它就是一个命令行窗口，用于通过电脑端与模拟器或者是设备之间的交互，类似于我们使用xshell工具与Linux服务器进行连接。</li>
+</ul>
+</li>
+<li>安装openssl</li>
+<li><strong>设备已root</strong></li>
+</ul>
+<p>其中关于设备root权限的获取，如果是使用模拟器，一般来说都可以找到直接带有root权限的镜像。如果是物理机，则需要根据具体的型号获取root权限（目前主流的方法是Magisk）</p>
+<p>笔者使用的手机是华为手机，安全性极高、难以root，（华为！）且考虑到刷root存在一定风险，故笔者从淘宝购入了一个二手小米手机，专门用于安卓应用的抓包</p>
+<p>（贴这个图是为了让老师相信是我自己写的）</p>
+<p><img    class="lazyload" data-original="https://md.byr.moe/uploads/upload_6d601408dee00c466fc73269860f1821.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">img</span></p>
+<p>在做好准备工作之后，先在电脑端对证书进行签名，以fiddler证书为例，在命令行中输入以下命令</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">openssl x509 -inform DER -subject_hash_old -<span class="hljs-keyword">in</span> <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">FiddlerRoot</span>.</span></span>cer<br></code></pre></td></tr></table></figure>
+
+<p>这一条命令会生成一个hash值，我们最终生成的证书文件的文件名需要为{hash}.0</p>
+<p>例如生成的hash值为831c74f0，则使用以下命令生成证书文件</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">openssl</span> x<span class="hljs-number">509</span> -inform DER -text -in xxx.cer &gt; <span class="hljs-number">831</span>c<span class="hljs-number">74</span>f<span class="hljs-number">0</span>.<span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<p>最后编辑一下输出的文件，把 —–BEGIN CERTIFICATE—– 到最后的这部分移动到开头。</p>
+<p><img    class="lazyload" data-original="https://md.byr.moe/uploads/upload_32232707253e712b0ee6e498d8b722ab.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="   ><span class="image-caption">img</span></p>
+<p>生成好证书后，使用adb将证书挂载到系统证书目录</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">adb</span> push <span class="hljs-number">831</span>c<span class="hljs-number">74</span>f<span class="hljs-number">0</span>.<span class="hljs-number">0</span> /sdcard  <br><br><span class="hljs-attribute">adb</span> shell<br><br><span class="hljs-attribute">su</span><br><br><span class="hljs-attribute">mount</span> -o remount,rw /system<br><span class="hljs-comment">#切换到超级用户更改目录权限</span><br><br><span class="hljs-attribute">cp</span> /sdcard/<span class="hljs-number">831</span>c<span class="hljs-number">74</span>f<span class="hljs-number">0</span>.<span class="hljs-number">0</span> /system/etc/security/cacerts/<br><br><span class="hljs-attribute">chmod</span> <span class="hljs-number">644</span> /system/etc/security/cacerts/<span class="hljs-number">831</span>c<span class="hljs-number">74</span>f<span class="hljs-number">0</span>.<span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<p>当然，也可以使用magisk的证书管理插件或是其他功能类似的工具来进行证书挂载，操作上可能更加简洁一些</p>
+<h3 id="SSL-Pinning"><a href="#SSL-Pinning" class="headerlink" title="SSL-Pinning"></a>SSL-Pinning</h3><p>一般来说，完成了前面的步骤之后，已经可以在手机的浏览器上抓到https的包了，但是可能依然抓不到一些app的包，这就要提到SSL-Pinning这个技术</p>
+<blockquote>
+<p>SSL  Pinning是一种专门防止中间人攻击的技术，主要机制是在客户端发起请求–&gt;收到服务器发来的证书进行校验，如果收到的证书不被客户端信任，就直接断开连接不继续求情。可以发现中间人攻击的要点的伪造了一个假的服务端证书给了客户端，客户端误以为真。解决思路就是，客户端也预置一份服务端的证书，比较一下就知道真假了。</p>
+<p>SSL-pinning有两种方式：</p>
+<ul>
+<li>证书锁定（Certificate Pinning）<br> 需要在客户端代码内置仅接受指定域名的证书，而不接受操作系统或浏览器内置的CA根证书对应的任何证书，通过这种授权方式，保障了APP与服务端通信的唯一性和安全性，因此客户端与服务端（例如API网关）之间的通信是可以保证绝对安全。但是CA签发证书都存在有效期问题，缺点是在<br> 证书续期后需要将证书重新内置到APP中。</li>
+<li>公钥锁定（ Public Key Pinning）<br> 提取证书中的公钥并内置到客户端中，通过与服务器对比公钥值来验证连接的正确性。制作证书密钥时，公钥在证书的续期前后都可以保持不变（即密钥对不变），所以可以避免证书有效期问题，一般推荐这种做法</li>
+</ul>
+</blockquote>
+<p>参考<a target="_blank" rel="noopener" href="https://onejane.github.io/2022/10/25/%E6%8A%93%E5%8C%85%E5%AF%B9%E6%8A%97/#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A0%A1%E9%AA%8C%E5%AE%A2%E6%88%B7%E7%AB%AF">https://onejane.github.io/2022/10/25/%E6%8A%93%E5%8C%85%E5%AF%B9%E6%8A%97/#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A0%A1%E9%AA%8C%E5%AE%A2%E6%88%B7%E7%AB%AF</a>，除了使用Xposed和Magisk相应的模块，我们还可以使用hook技术来bypass SSL-Pinning</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs stylus">objection -g com<span class="hljs-selector-class">.ophone</span><span class="hljs-selector-class">.reader</span><span class="hljs-selector-class">.ui</span> explore   咪咕阅读<br>android sslpinning disable  需要在启动时运行<br>objection -g com<span class="hljs-selector-class">.ophone</span><span class="hljs-selector-class">.reader</span><span class="hljs-selector-class">.ui</span> explore -s <span class="hljs-string">&quot;android sslpinning disable&quot;</span>  登录页面触发解绑定，如果崩溃<br></code></pre></td></tr></table></figure>
+
+<p>git clone <a target="_blank" rel="noopener" href="https://github.com/WooyunDota/DroidSSLUnpinning.git">https://github.com/WooyunDota/DroidSSLUnpinning.git</a><br> frida -U -f com.ninemax.ncsearchnew -l ObjectionUnpinningPlus/hooks.js –no-pause</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">Java.<span class="hljs-keyword">perform</span>(<span class="hljs-keyword">function</span>() &#123;<br>    var array_list = Java.use(&quot;java.util.ArrayList&quot;);<br>    var ApiClient = Java.use(<span class="hljs-string">&#x27;com.android.org.conscrypt.TrustManagerImpl&#x27;</span>);<br><br>    ApiClient.checkTrustedRecursive.implementation = <span class="hljs-keyword">function</span>(a1, a2, a3, a4, a5, a6) &#123;<br>        // console.log(<span class="hljs-string">&#x27;Bypassing SSL Pinning&#x27;</span>);<br>        var k = array_list.$<span class="hljs-built_in">new</span>();<br>        <span class="hljs-keyword">return</span> k; <br>        &#125;<br>&#125;, <span class="hljs-number">0</span>);<br>//过证书绑定 ssl pinning 对证书在代码中进行额外校验，<br><span class="hljs-keyword">function</span> hook_ssl() &#123;<br>    // hook ssl 调用栈<br>    Java.<span class="hljs-keyword">perform</span>(<span class="hljs-keyword">function</span>() &#123;<br>        var ClassName = &quot;com.android.org.conscrypt.Platform&quot;;<br>        var Platform = Java.use(ClassName);<br>        var targetMethod = &quot;checkServerTrusted&quot;;<br>        var len = Platform[targetMethod].overloads.length;<br>        console.log(len);<br>        <span class="hljs-keyword">for</span>(var i = <span class="hljs-number">0</span>; i&lt;len; ++i) &#123;<br>            Platform[targetMethod].overloads[i].implementation = <span class="hljs-keyword">function</span> () &#123;<br>                console.log(&quot;class:&quot;, ClassName, &quot;target:&quot;, targetMethod, &quot;i:&quot;, i, arguments);<br>                printStack(ClassName + &quot;.&quot; + targetMethod);<br>            &#125;<br>        &#125;<br>    &#125;);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="双向校验"><a href="#双向校验" class="headerlink" title="双向校验"></a>双向校验</h3><blockquote>
+<p>SSL pinning实际上是客户端锁定服务器端的证书, 在要与服务器进行交互的时候, 服务器端会将CA证书发送给客户端, 客户端会调用函数对服务器端的证书进行校验, 与本地的服务器端证书(存放在\asset目录或\res\raw下)进行比对。</p>
+<p>而双向校验是添加了客户端向服务器发送CA证书, 服务器端对客户端的证书进行校验的部分。</p>
+<p>客户端和服务端同时检验数据的加密和解密</p>
+<p>1.客户端发起HTTPS请求，将SSL协议信息发送给服务端。</p>
+<p>2.服务端去CA机构申请来一份CA证书，在前面提过，证书里面有服务端公钥和签名。将CA证书发送给客户端</p>
+<p>3.客户端发送自己的客户端证书给服务端，证书里面有客户端的公钥，并发送支持的对称加密方案给服务端，供其选择</p>
+<p>4.服务端选择完加密方案后，按照加密方案完成刚才得到的公钥去加密</p>
+<p>5.客户端用自己的私钥去解密选好的加密方案，客户端生成一个随机数（密钥），用刚才等到的服务端公钥去加密这个随机数形成密文，发送给服务端。</p>
+<p>6.服务端和客户端在后续通讯过程中就使用这个密钥进行通信了。和之前的非对称加密不同，这里开始就是一种对称加密的方式</p>
+</blockquote>
+<p>对于双向校验，一般的解决思路是：通过逆向技术从客户端中取出证书及密码，然后将证书安装到对应的抓包软件上，这样在服务端看来，抓包软件其实就与正常的客户端无异了</p>
+<h3 id="其他防抓包机制及终极解决方案"><a href="#其他防抓包机制及终极解决方案" class="headerlink" title="其他防抓包机制及终极解决方案"></a>其他防抓包机制及终极解决方案</h3><p>除了前面提到的比较常见的防抓包机制外，还有一些譬如SSL重协商、代理检测等抓包机制，这些抓包机制往往比较容易绕过</p>
+<p>但同时也存在一些极难攻克的防抓包机制，譬如<a target="_blank" rel="noopener" href="https://onejane.github.io/2022/10/25/%E6%8A%93%E5%8C%85%E5%AF%B9%E6%8A%97/#%E5%8C%97%E4%BA%AC%E9%93%B6%E8%A1%8C%E4%B8%AD%E6%8F%90%E5%88%B0%E7%9A%84%E5%8C%97%E4%BA%AC%E9%93%B6%E8%A1%8Capp%E7%9A%84%E5%8A%A0%E5%9B%BA%E5%8E%82%E5%95%86%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BC%80%E5%8F%91%E7%9A%84%E8%AF%81%E4%B9%A6%E7%BB%91%E5%AE%9A%E5%AF%B9%E6%8A%97">https://onejane.github.io/2022/10/25/抓包对抗/#北京银行中提到的北京银行app的加固厂商自定义开发的证书绑定对抗</a></p>
+<p>文中也给出了对于安卓抓包的终极解决方案：修改安卓底层aosp源码，将发送请求时打印log后，重编译成镜像刷机，比如项目<a target="_blank" rel="noopener" href="https://github.com/icew4y/crypto_filter_aosp">crypto_filter_aosp</a>，让整个系统都变成一个抓包工具。</p>
+<h3 id="题外话：开发人员怎么抓包？"><a href="#题外话：开发人员怎么抓包？" class="headerlink" title="题外话：开发人员怎么抓包？"></a>题外话：开发人员怎么抓包？</h3><p>在app开发的过程中，正常的开发人员难免有需要抓包的情况，难道开发们人人都是大黑客吗？</p>
+<p>那当然不是，按照笔者本人在字节跳动的经验来说，开发人员抓包需求的解决方案一般有：</p>
+<ul>
+<li>使用app的内部测试版本，一般在内部测试版本里可以关闭SSL-Pinning等校验</li>
+<li>通过服务端对设备的MAC作白名单处理关闭校验机制</li>
+<li>提供在线的服务端抓包平台</li>
+</ul>
+<p>但有时候对于一些体量不那么大，开发环境不那么完善的app，可能还是要小小发挥一下黑客精神</p>
+<h2 id="Harmony-OS"><a href="#Harmony-OS" class="headerlink" title="Harmony OS"></a>Harmony OS</h2><p>（这一段纯在凑字数，因为作业要求要写2000字的HarmonyOS与安卓系统的对比，我整个一个乌鱼子= =|||，最后选择了直接抄鸿蒙白皮书）</p>
+<p>鸿蒙系统大体上与安卓其实没有太大差别，对安卓系统可用的技术基本上对于鸿蒙系统也都可用。</p>
+<p>但是如笔者前文所说，<strong>华为手机往往极难root</strong>，直接将抓包卡死在了第一步-安装系统证书</p>
+<p>[Harmony OS3 安全技术白皮书](<a target="_blank" rel="noopener" href="https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/privacy/privary-new/down/HarmonyOS">https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/privacy/privary-new/down/HarmonyOS</a> 3.0.0 安全技术白皮书文档.pdf)</p>
+<blockquote>
+<p>5.5 系统安全等级 SL4<br> 设备刷机及改制行为管控<br> 通过刷入特权软件版本，从而额外获得更多权限并危害设备安全是攻击者及黑灰产常<br> 用的手段。HarmonyOS 支持设备刷机及改制行为管控。通过将商用和研发版本软件签<br> 名的分离，并在出厂后通过熔丝控制一律切换到商用签名，实现了 HarmonyOS 商用<br> 设备上仅运行商用版本软件，各种泄露的特权版本软件均无法启动。在维修等需运行<br> 特权版本软件的场景，则需得到 OEM 签发的授权证书，校验通过后方可运行特权版本<br> 软件。<br> 在涉及改变设备的国家/地区、运营商、商用机/演示机，或临时/永久解锁等场景，均<br> 需在在线的加密狗机制鉴权通过后，方允许。<br> 可信执行环境<br> SL4 安全等级的 HarmonyOS 设备支持可信执行环境技术，华为自研的可信执行环境<br> 技术 iTrustee 基于 TrustZone 技术实现，TrustZone 是硬件级别的安全，兼顾了性<br> 能、安全和成本的平衡。TrustZone 技术将处理器 的工作状态分为安全世界<br> （Trusted Execution Environment ，TEE，也叫可信 执行环境）和非安全世界（Rich<br> Execution Environment，REE，也叫普通执行 环境）。通过特殊指令 SMC 在 CPU<br> 的安全世界和普通世界之间切换来提供硬件隔离。在安全世界，提供了对硬件资源的<br> 保护和隔离，包括内存、外设等，通过执行过程保护、密钥保密性、数据完整性和访<br> 问权限实现了端到端的安全，可防止来自非安全世界中的恶意软件攻击。<br> HarmonyOS 可信执行环境，支持多核多线程能力，可创建多个安全任务，并可运行在<br> 多个 CPU，极大提高可信执行环境的算力；此外，HarmonyOS 可信执行环境支持基<br> 础功能库与数学库（C 库、POSIX API）、支持动态库，可极大地方便可信应用的开<br> 发和部署。<br> HarmonyOS 可信执行环境技术支持如下能力：<br> 基础安全加固<br> ● 可信执行环境全生命周期确保合法性及完整性，包含：启动、升级；<br> ● 对镜像文件进行逆向分析是攻击者对目标发起攻击的重要手段，HarmonyOS 的可<br> 信执行环境支持镜像防逆向保护。防逆向保护技术主要为镜像加密和符号表混<br> 淆；<br> ● HarmonyOS 可信执行环境支持防渗透，包括安全编译（-PIC/-PIE、REOLO）、<br> 地址随机化、栈保护、数据不可执行、代码段及函数指针只读；<br> HarmonyOS 3 安全技术白皮书 5 HarmonyOS“正确的设备”分级系统安全架构<br> 文档版本 V1.0 版权所有 © 华为技术有限公司 30<br> 安全管理<br> ● 支持可信应用程序的生命周期管理，包括：可信应用证书签名及吊销、可信应用<br> 在安装阶段校验完整性、可信应用生命周期会话管理；<br> ● 可信执行环境可能运行多个可信应用程序，为确保可信应用间的有效隔离，避免<br> 可信应用程序漏洞被攻击者利用后对可信执行环境进行持续的渗透和破坏，<br> HarmonyOS 可信执行环境支持细粒度的资源访问及权限控制；<br> ● 可信执行环境存在多个安全应用服务于 REE 的不同任务，HarmonyOS 支持细粒<br> 度的可信应用访问控制，某可信应用可只服务于特定的应用；HarmonyOS 采用白<br> 名单机制，白名单内的进程可访问某可信应用,在白名单基础上进一步支持进程代<br> 码段的合法性鉴权，防止仿冒；<br> ● 可信执行环境负责敏感数据处理，需占用系统一定的资源；为提升系统资源（如<br> 内存）的利用率，HarmonyOS 可信执行环境支持资源的动态管理能力，降低静态<br> 占用资源的比例，如普通内存可动态转换为安全内存。<br> 安全服务<br> ● HarmonyOS 可信存储服务，提供关键信息的存储能力，保证数据的机密性、完整<br> 性。可信存储支持设备绑定，支持不同安全应用之间的隔离，可信应用仅能访问<br> 自己的存储内容，无法打开、删除或篡改其它应用的存储内容。HarmonyOS 可信<br> 存储分为两种：安全文件系统存储与 RPMB 存储，前者将密文存储到特定的安全<br> 存储分区，后者存储到 eMMC 特定的存储区域，RPMB 支持防删除、防回滚。<br> ● HarmonyOS 可信执行环境加解密服务支持多种对称、非对称加解密算法以及密钥<br> 派生算法,支持同一芯片平台相同密钥的派生，支持设备唯一密钥,支持标准的加密<br> 算法，为第三方开发存储和使用密钥的业务可信应用提供支持，并遵从 Global<br> platform TEE 标准。为提高安全性，HarmonyOS 可信执行环境内部的密钥生成<br> 和计算，均由独立的硬件芯片完成。<br> ● HarmonyOS 可信时间服务，提供可信的基准时间，该时间不能被恶意 TA 或<br> REE 应用修改。<br> ● HarmonyOS 提供可信显示与输入能力 TUI，提供了无法截屏的 TUI 显示技术来<br> 保护可信应用显示的内容，采用与外部隔离的显示。当显示时完全阻止 REE 侧<br> 对该显示区域的访问，可防止恶意应用对于显示和输入的劫持和篡改。确保恶意<br> 程序既看不到显示屏上的信息，也无法访问触摸屏。TUI 支持 PNG 图片、文<br> 本、按钮和输入框等基本控件，支持显示统一大小的汉 字、英文字母、符号和数<br> 字，支持定制界面，输入键盘按键随机化支持丰富的控件支持、窗口管理, 界面<br> 使用终端的 UI 风格<br> HarmonyOS 3 安全技术白皮书 5 HarmonyOS“正确的设备”分级系统安全架构<br> 文档版本 V1.0 版权所有 © 华为技术有限公司 31<br> HarmonyOS 可信执行环境面向开发者提供可信执行环境平台能力，提供丰富的<br> API，完 善的 SDK，以及相关参考手册、参考设计，同时提供安全证书管理、应用签<br> 名、 安全应用生命周期管理，应用上线服务，通过 HUAWEI DevEco Studio 开发环<br> 境 提供统一的开发者开发界面。 第三方应用，可以基于上述能力进行可信用的开发<br> 和调试。<br> 文件系统分级加密<br> SL4 安全等级的 HarmonyOS 应支持文件级加密功能，利用内核的加密文件系统模块<br> 和硬件加解密引擎，采用 AES-256 算法的 XTS 模式实现加密。<br> 为兼顾用户数据安全和应用体验，HarmonyOS 提供了以下几种不同的方案：与设备锁<br> 屏密码配合的数据加密方案（CE/SECE/ECE）和与设备锁屏密码无关的加密方案<br> （DE），默认采用前者数据保护方案。此类方案中加密数据的类密钥（Class Keys）<br> 与锁屏密码相关，被用户锁屏密码和设备唯一密钥共同保护。<br> 详细内容可参考数据安全章节。<br> 控制流完整性 CFI<br> ROP(Return Oriented Programming)和 JOP(Jump Oriented Programming)是通过程<br> 序漏洞将程序控制流重定位到现有程序的代码片段的一种攻击手段。攻击者通过组合<br> 这些代码片段实现完整的攻击行为。<br> 由于实现 ROP/JOP 攻击的常用方法是利用程序漏洞来覆盖内存中的函数指针， 因<br> 此可针对性进行检查。CFI 技术通过添加额外的检查来确认控制流停留在预先 设定的<br> 范围中，以缓解 ROP/JOP 攻击，如果检测到程序发生未定义的行为，则 丢弃程序<br> 执行。尽管 CFI 无法阻止攻击者利用已知漏洞，甚至改写函数指针， 但它可严格限<br> 制可被有效调用的目标范围，这使得攻击者在实践中利用漏洞变 得更加困难。<br> HarmonyOS 采用 Clang CFI 及栈保护技术以缓解 ROP/JOP 攻击威胁内核。<br> 强制访问控制<br> HarmonyOS 支持强制访问控制特性，强制访问控制策略在设备启动时加载到内核中，<br> 无法被动态更改。该特性对所有进程访问目录、文件、设备节点等操作资源实施强制<br> 访问控制，对具有 root 权限的本地进程实施基于权能的强制访问控制，阻止恶意进程<br> 读、写受保护数据或者攻击其他进程，把被恶意篡改的进程对系统的影响限制在一个<br> 局部范围内，支撑上层应用实现各种安全防护。<br> HarmonyOS 同时也支持 seccomp 特性，基于只读文件系统中的规则文件，对进程<br> 能够调用的系统调用进行限制，避免恶意应用通过使用敏感的系统调用对系统造成危<br> 害。<br> HarmonyOS 3 安全技术白皮书 5 HarmonyOS“正确的设备”分级系统安全架构<br> 文档版本 V1.0 版权所有 © 华为技术有限公司 32<br> 内核完整性保护*<br> 虽然 Secure Boot 和 Verified Boot 确保了启动时软件的合法性及完整性，但合法代<br> 码中仍然可能存在漏洞会被攻击者利用。<br> HarmonyOS 内核完整性保护技术通过 ARMv8 处理器提供的虚拟化扩展模式对内核保<br> 护，防止系统关键寄存器、页表、代码等被篡改。从而达到系统运行时的完整性保护<br> 和防提权的目的。<br> 内核完整性保护技术不但实现了对于代码及只读数据段等静态数据的保护，而且实现<br> 了稀有写（Write-Rare）保护机制对于部分动态数据提供保护。利用稀有写机制保护<br> 了内核里大部分时间是被读取而极少被更改的数据。攻击者即使通过漏洞获取了内核<br> 级别的内存写能力，也无法修改这部分数据。<br> 目前 HarmonyOS 内核完整性保护技术支持如下安全保护机制：<br> ● 内核及驱动模块的代码段不可被篡改<br> ● 内核及驱动模块的只读数据段不可被篡改<br> ● 内核非代码段保证不可执行<br> ● 内核关键动态数据不可被篡改<br> ● 关键系统寄存器设置不可被篡改<br> *注：此功能当前仅在中国区部分海思芯片型号的产品上提供。</p>
+</blockquote>
+<p>给手机刷root本质上其实是一种提权，属于攻击行为的一种，而HarmonyOS采用了多种技术进行保护，导致难以获取手机的root权限。</p>
+<p>不过，也用用户认为华为这样做减少了用户的自由度，不能满足用户的多种需求，笔者在此不做评价。</p>
+<h2 id="总结与感想"><a href="#总结与感想" class="headerlink" title="总结与感想"></a>总结与感想</h2><p>我们常常开玩笑说，“防止黑客入侵的终极手段就是拔网线”</p>
+<p>玩笑归玩笑，却也反映出IT领域的一个事实：安全性和可用性的冲突是长久存在的，比如网站为了防止攻击者爆破密码加入验证码，却也导致正常用户过验证过到不厌其烦。防抓包本来是为了防止中间人攻击而建立的机制，却也为一些有特殊需求的用户（比如我）带来了困难。</p>
+<p>同时我们要意识到，安全人员们打着安全的名义，做的事情其实是与黑客无异的，“每一顶白帽都有一道黑边”。笔者曾通过抓取微信小程序的请求包把自己刷到小游戏的积分排行榜第一名，但同样的技术也可以用来窃取他人隐私甚至非法获取他人钱财。技术中立且无罪，但使用技术的人不是，作为安全工作者的我们更要有自己的道德底线。</p>
+<p>（写这一段纯纯是为了凑字数）</p>
+<p>​    </p>
+
+      </section>
+      <section class="extra">
+        
+        
+          <section class="donate">
+  <div id="qrcode-donate">
+    <img   class="lazyload" data-original="/images/myimg/alipay.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >
+  </div>
+  <div class="icon">
+    <a href="javascript:;" id="alipay"><i class="iconfont iconalipay"></i></a>
+    <a href="javascript:;" id="wechat"><i class="iconfont iconwechat-fill"></i></a>
+  </div>
+</section>
+        
+        
+  <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%8A%93%E5%8C%85/" rel="tag">抓包</a></li></ul> 
+
+        
+  <nav class="nav">
+    <a href="/2099/01/10/my2021/"><i class="iconfont iconleft"></i>2021年度划水报告</a>
+    <a href="/2023/01/04/LOL-minion/">英雄联盟萌新学习笔记-兵线篇<i class="iconfont iconright"></i></a>
+  </nav>
+
+      </section>
+      
+    </section>
+  </div>
+</article></div>
+      <div class="col-xl-3">
+        
+          
+  <aside class="toc-wrap">
+    <h3 class="toc-title">文章目录：</h3>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E5%8D%93%E5%BA%94%E7%94%A8%E7%9A%84%E9%98%B2%E6%8A%93%E5%8C%85%E6%9C%BA%E5%88%B6%E5%8F%8A%E7%AE%80%E5%8D%95%E7%BB%95%E8%BF%87"><span class="toc-text">安卓应用的防抓包机制及简单绕过</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E5%85%A5"><span class="toc-text">引入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E6%8A%93%E5%8C%85%E6%9C%BA%E5%88%B6"><span class="toc-text">防抓包机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CA%E8%AF%81%E4%B9%A6"><span class="toc-text">CA证书</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%87%E7%BA%A7%E7%94%A8%E6%88%B7%E8%AF%81%E4%B9%A6%E4%B8%BA%E7%B3%BB%E7%BB%9F%E8%AF%81%E4%B9%A6"><span class="toc-text">升级用户证书为系统证书</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SSL-Pinning"><span class="toc-text">SSL-Pinning</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E5%90%91%E6%A0%A1%E9%AA%8C"><span class="toc-text">双向校验</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E9%98%B2%E6%8A%93%E5%8C%85%E6%9C%BA%E5%88%B6%E5%8F%8A%E7%BB%88%E6%9E%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-text">其他防抓包机制及终极解决方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E5%A4%96%E8%AF%9D%EF%BC%9A%E5%BC%80%E5%8F%91%E4%BA%BA%E5%91%98%E6%80%8E%E4%B9%88%E6%8A%93%E5%8C%85%EF%BC%9F"><span class="toc-text">题外话：开发人员怎么抓包？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Harmony-OS"><span class="toc-text">Harmony OS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%E4%B8%8E%E6%84%9F%E6%83%B3"><span class="toc-text">总结与感想</span></a></li></ol></li></ol>
+  </aside>
+
+        
+      </div>
+    </div>
+  </div>
+</main>
+  
+
+<footer class="footer">
+  <div class="footer-social"><a 
+        href="tencent://message/?Menu=yes&uin=3067733270 "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#12B7F5'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconQQ "></i>
+      </a><a 
+        href="javascript:; "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#09BB07'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconwechat-fill "></i>
+      </a><a 
+        href="mailto:3067733270@qq.com "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color=#FF3B00" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconmail"></i>
+      </a></div>
+  
+    <div class="footer-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+  
+</footer>
+  
+      <div class="fab fab-plus">
+    <i class="iconfont iconplus"></i>
+  </div>
+  
+  
+  <div class="fab fab-up">
+    <i class="iconfont iconcaret-up"></i>
+  </div>
+  
+  
+  
+    
+<script src="/js/color-mode.js"></script>
+
+  
+  
+</body>
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+
+
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+
+
+
+
+<script src="/js/utils.js"></script>
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
